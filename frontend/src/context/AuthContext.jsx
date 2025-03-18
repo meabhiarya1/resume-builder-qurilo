@@ -13,10 +13,13 @@ const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        email,
-        password,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/auth/login`,
+        {
+          email,
+          password,
+        }
+      );
       localStorage.setItem("token", res.data.token);
       setUser(res.data.user);
       navigate("/"); // Redirect to home after login
@@ -47,7 +50,7 @@ const AuthProvider = ({ children }) => {
     setLoading(true);
 
     axios
-      .get("http://localhost:5000/api/auth/profile", {
+      .get(`${import.meta.env.VITE_BASE_URL}/api/auth/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {

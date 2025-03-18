@@ -1,13 +1,13 @@
 import React from "react";
 import Navbar from "../Navbar/Navbar";
 
-const Dashboard = () => {
+const AdminDashboard = () => {
   return (
     <div>
       <Navbar />
-      Dashboard
+      AdminDashboard
     </div>
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;
