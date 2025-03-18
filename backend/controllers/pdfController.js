@@ -31,10 +31,22 @@ exports.savePDF = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 // 📂 Get all PDFs for a user
 exports.getUserPDFs = async (req, res) => {
   try {
     const pdfs = await PDF.find({ userId: req.user._id });
+    res.json(pdfs);
+  } catch (error) {
+    console.error("Error fetching PDFs:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// 📂 Get all PDFs for the for admin of selected user
+exports.getUserPDFsForAdmin = async (req, res) => {
+  try {
+    const pdfs = await PDF.find({ userId: req.params.id });
     res.json(pdfs);
   } catch (error) {
     console.error("Error fetching PDFs:", error);

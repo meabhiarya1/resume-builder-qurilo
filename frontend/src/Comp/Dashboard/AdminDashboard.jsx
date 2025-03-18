@@ -3,6 +3,7 @@ import Navbar from "../Navbar/Navbar";
 import TotalUsers from "../TotalUsers/TotalUsers";
 import Templates from "../Templates/Templates";
 import Upload from "../TemplateUplods/Uploads";
+import UsersResumeModals from "../AdminModals/UsersResumeModals/UsersResumeModals";
 import axios from "axios";
 
 const AdminDashboard = () => {
@@ -10,18 +11,16 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [pdfData, setPdfData] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const config = token
-          ? { headers: { Authorization: `Bearer ${token}` } }
-          : {};
-
         const { data } = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/api/auth/users`,
-          config
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         setUsers(data);
       } catch (err) {
@@ -33,6 +32,24 @@ const AdminDashboard = () => {
 
     fetchUsers();
   }, []);
+
+  const handleUserPdfs = async (id) => {
+    try {
+      const token = localStorage.getItem("token"); // Get token from storage
+
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/pdfs/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setPdfData(data); // Store the data in state
+      setIsModalOpen(true); // Open the modal
+    } catch (error) {
+      console.error("Error fetching PDFs:", error);
+    }
+  };
 
   return (
     <div>
@@ -64,12 +81,20 @@ const AdminDashboard = () => {
         {/* Main Content (2/3) */}
         <div className="col-span-3 p-4">
           {activeTab === "users" && (
-            <TotalUsers users={users} loading={loading} error={error} />
+            <TotalUsers
+              users={users}
+              loading={loading}
+              error={error}
+              handleUserPdfs={handleUserPdfs}
+            />
           )}
           {activeTab === "templates" && <Templates />}
           {activeTab === "uploads" && <Upload />}
         </div>
       </div>
+      {isModalOpen && (
+        <UsersResumeModals pdfData={pdfData} setIsModalOpen={setIsModalOpen} />
+      )}
     </div>
   );
 };

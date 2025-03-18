@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 const PDFViewerModal = ({ setShowModal, images, handleSave, saving }) => {
   const [currentPage, setCurrentPage] = useState(0);
