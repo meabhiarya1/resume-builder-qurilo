@@ -4,6 +4,7 @@ import PDFViewerModal from "../PDFviwerModal/PDFviwerModal";
 import * as pdfjs from "pdfjs-dist";
 import "pdfjs-dist/build/pdf.worker.entry"; // ✅ Ensure the worker is loaded
 import UserTotalResume from "../UserTotalResume/UserTotalResume";
+import PDFViewerModalStatic from "../PDFviwerModalStatic/PDFviwerModalStatic";
 
 // ✅ Manually set the workerSrc correctly
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -17,6 +18,13 @@ const UserDashboard = () => {
   const [images, setImages] = useState([]);
   const [pdfsInfo, setPdfsInfo] = useState([]);
   const [pdfFileName, setPdfFileName] = useState(null);
+  const [selectedResume, setSelectedResume] = useState(null);
+  const [showModalModalStatic, setShowModalModalStatic] = useState(false);
+
+  const handleViewResume = (pdf) => {
+    setSelectedResume(pdf);
+    setShowModal(true);
+  };
 
   // Handle File Upload
   const handleFileUpload = (event) => {
@@ -149,7 +157,19 @@ const UserDashboard = () => {
           </div>
         </div>
 
-        <UserTotalResume pdfsInfo={pdfsInfo} />
+        <UserTotalResume
+          pdfsInfo={pdfsInfo}
+          handleViewResume={handleViewResume}
+          selectedResume={selectedResume}
+        />
+
+        {showModal && selectedResume && (
+          <PDFViewerModalStatic
+            selectedResume={selectedResume}
+            showModalModalStatic={showModalModalStatic}
+            setShowModalModalStatic={setShowModalModalStatic}
+          />
+        )}
       </div>
     </div>
   );
