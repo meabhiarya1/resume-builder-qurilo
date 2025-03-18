@@ -3,6 +3,7 @@ import Navbar from "../Navbar/Navbar";
 import PDFViewerModal from "../PDFviwerModal/PDFviwerModal";
 import * as pdfjs from "pdfjs-dist";
 import "pdfjs-dist/build/pdf.worker.entry"; // ✅ Ensure the worker is loaded
+import UserTotalResume from "../UserTotalResume/UserTotalResume";
 
 // ✅ Manually set the workerSrc correctly
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -14,11 +15,12 @@ const UserDashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [pdfFile, setPdfFile] = useState(null);
   const [images, setImages] = useState([]);
+  const [pdfsInfo, setPdfsInfo] = useState([]);
 
   // Handle File Upload
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    console.log(file)
+    console.log(file);
     if (file && file.type === "application/pdf") {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -30,7 +32,7 @@ const UserDashboard = () => {
       alert("Please upload a valid PDF file.");
     }
   };
-  
+
   // ✅ Extract PDF Pages as Images
   const extractPagesAsImages = async (pdfFile) => {
     try {
@@ -68,45 +70,30 @@ const UserDashboard = () => {
     }
   }, [pdfFile]);
 
+  useEffect(() => {
+    const fetchedData = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/api/pdfs`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const data = await response.json();
+        setPdfsInfo(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchedData();
+  }, []);
+
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col ">
       {/* Navbar */}
       <Navbar />
-
-      {/* Upload Section */}
-      <div className="flex flex-grow items-center justify-center">
-        <div className="group relative w-[420px]">
-          <div className="relative overflow-hidden rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
-            <div className="relative p-6">
-              <h3 className="text-lg font-semibold text-white">Upload Files</h3>
-              <p className="text-sm text-slate-400">
-                Drag & drop your files here
-              </p>
-
-              {/* File Upload Input */}
-              <div className="group/dropzone mt-6">
-                <div className="relative rounded-xl border-2 border-dashed border-slate-700 bg-slate-900/50 p-8 transition-colors group-hover/dropzone:border-cyan-500/50">
-                  <input
-                    type="file"
-                    className="absolute inset-0 z-50 h-full w-full cursor-pointer opacity-0"
-                    accept="application/pdf"
-                    onChange={handleFileUpload} // Handle file selection
-                  />
-                  <div className="space-y-6 text-center">
-                    <p className="text-base font-medium text-white">
-                      Drop your files here or browse
-                    </p>
-                    <p className="text-sm text-slate-400">Support files: PDF</p>
-                    <p className="text-xs text-slate-400">
-                      Max file size: 10MB
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Show Modal when a PDF is uploaded */}
       {showModal && (
@@ -117,6 +104,51 @@ const UserDashboard = () => {
           setImages={setImages}
         />
       )}
+
+      <div className="flex  flex-grow ">
+        <UserTotalResume pdfsInfo={pdfsInfo} />
+
+        {/* Upload Section */}
+        <div className="flex flex-grow items-center justify-center ">
+          <div className="group relative w-[420px]">
+            <div className="relative overflow-hidden rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
+              <div className="relative p-6">
+                <h3 className="text-lg font-semibold text-white">
+                  Upload Files
+                </h3>
+                <p className="text-sm text-slate-400">
+                  Drag & drop your files here
+                </p>
+
+                {/* File Upload Input */}
+                <div className="group/dropzone mt-6">
+                  <div className="relative rounded-xl border-2 border-dashed border-slate-700 bg-slate-900/50 p-8 transition-colors group-hover/dropzone:border-cyan-500/50">
+                    <input
+                      type="file"
+                      className="absolute inset-0 z-50 h-full w-full cursor-pointer opacity-0"
+                      accept="application/pdf"
+                      onChange={handleFileUpload} // Handle file selection
+                    />
+                    <div className="space-y-6 text-center">
+                      <p className="text-base font-medium text-white">
+                        Drop your files here or browse
+                      </p>
+                      <p className="text-sm text-slate-400">
+                        Support files: PDF
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        Max file size: 10MB
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <UserTotalResume pdfsInfo={pdfsInfo} />
+      </div>
     </div>
   );
 };
