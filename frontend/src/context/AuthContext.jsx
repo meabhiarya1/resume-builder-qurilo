@@ -6,11 +6,12 @@ export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   const login = async (email, password) => {
+    setLoading(true);
     try {
       const res = await axios.post("http://localhost:5000/api/auth/login", {
         email,
@@ -21,6 +22,8 @@ const AuthProvider = ({ children }) => {
       navigate("/"); // Redirect to home after login
     } catch (error) {
       console.error("Login failed", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -29,30 +32,6 @@ const AuthProvider = ({ children }) => {
     setUser(null);
     navigate("/"); // Redirect to login page
   };
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-
-  //   if (!token) {
-  //     navigate("/"); // Redirect if no token
-  //     return;
-  //   }
-
-  //   axios
-  //     .get("http://localhost:5000/api/auth/profile", {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((res) => {
-  //       setUser(res?.data);
-  //       navigate("/dashboard");
-  //     })
-  //     .catch((err) => {
-  //       if (err.response?.status === 401) {
-  //         logout(); // Token expired, logout user
-  //       }
-  //     })
-  //     .finally(() => setLoading(false));
-  // }, [navigate]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -64,6 +43,8 @@ const AuthProvider = ({ children }) => {
       }
       return;
     }
+
+    setLoading(true);
 
     axios
       .get("http://localhost:5000/api/auth/profile", {

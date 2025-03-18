@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useContext(AuthContext);
+  const { login, loading } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -82,16 +82,16 @@ const Login = () => {
             </a>
           </div>
           <button
-            className="w-full py-2 px-4 bg-purple-500 hover:bg-purple-700 rounded-md shadow-lg text-white font-semibold transition duration-200"
+            className="w-full py-2 px-4 bg-purple-500 hover:bg-purple-700 rounded-md shadow-lg text-white font-semibold transition duration-200 cursor-pointer"
             type="submit"
           >
-            Sign In
+            {loading ? "Loading..." : "Sign in"}
           </button>
         </form>
         <div className="text-center text-gray-300">
           Don't have an account?
           <p
-            className="text-purple-300 hover:underline"
+            className="text-purple-300 hover:underline cursor-pointer"
             onClick={() => navigate("/register")}
           >
             Sign up
