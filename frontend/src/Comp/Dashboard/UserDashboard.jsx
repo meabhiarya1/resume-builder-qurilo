@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../Navbar/Navbar";
+import PDFviwerModal from "../PDFviwerModal/PDFviwerModal";
 
 const UserDashboard = () => {
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <div className="h-screen flex flex-col">
       {/* Navbar */}
       <Navbar />
-
 
       <div className="flex flex-grow items-center justify-center">
         <div className="group relative w-[420px]">
@@ -104,6 +106,8 @@ const UserDashboard = () => {
           </div>
         </div>
       </div>
+
+      {showModal && <PDFviwerModal setShowModal={setShowModal} />}
     </div>
   );
 };
