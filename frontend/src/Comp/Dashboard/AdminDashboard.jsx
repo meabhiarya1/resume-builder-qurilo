@@ -5,6 +5,7 @@ import Templates from "../Templates/Templates";
 import Upload from "../TemplateUplods/Uploads";
 import UsersResumeModals from "../AdminModals/UsersResumeModals/UsersResumeModals";
 import axios from "axios";
+import UserResumePDFViewerModalStatic from "../AdminModals/UsersResumeModals/UserResumePDFViewerModalStatic";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState(null);
@@ -13,6 +14,8 @@ const AdminDashboard = () => {
   const [error, setError] = useState(null);
   const [pdfData, setPdfData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedResume, setSelectedResume] = useState(null);
+  const [showModalModalStatic, setShowModalModalStatic] = useState(false);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -92,8 +95,22 @@ const AdminDashboard = () => {
           {activeTab === "uploads" && <Upload />}
         </div>
       </div>
+
       {isModalOpen && (
-        <UsersResumeModals pdfData={pdfData} setIsModalOpen={setIsModalOpen} />
+        <UsersResumeModals
+          pdfData={pdfData}
+          setIsModalOpen={setIsModalOpen}
+          setSelectedResume={setSelectedResume}
+          setShowModalModalStatic={setShowModalModalStatic}
+        />
+      )}
+
+      {showModalModalStatic && selectedResume && (
+        <UserResumePDFViewerModalStatic
+          selectedResume={selectedResume}
+          setShowModalModalStatic={setShowModalModalStatic}
+          setSelectedResume={setSelectedResume}
+        />
       )}
     </div>
   );

@@ -1,6 +1,11 @@
 import React from "react";
 
-const UsersResumeModals = ({ pdfData, setIsModalOpen }) => {
+const UsersResumeModals = ({
+  pdfData,
+  setIsModalOpen,
+  setSelectedResume,
+  setShowModalModalStatic,
+}) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-invert backdrop-opacity-30 backdrop-blur-sm z-50">
       {/* Modal Card */}
@@ -26,7 +31,13 @@ const UsersResumeModals = ({ pdfData, setIsModalOpen }) => {
                     {pdf.pdfName}
                   </h3>
                 </div>
-                <button className="bg-green-500 hover:bg-green-600 px-3 py-1 text-white text-sm rounded-lg cursor-pointer">
+                <button
+                  className="bg-green-500 hover:bg-green-600 px-3 py-1 text-white text-sm rounded-lg cursor-pointer"
+                  onClick={() => {
+                    setSelectedResume(pdf);
+                    setShowModalModalStatic(true);
+                  }}
+                >
                   Show Details
                 </button>
               </div>
