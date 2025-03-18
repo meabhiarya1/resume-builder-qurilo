@@ -16,11 +16,12 @@ const UserDashboard = () => {
   const [pdfFile, setPdfFile] = useState(null);
   const [images, setImages] = useState([]);
   const [pdfsInfo, setPdfsInfo] = useState([]);
+  const [pdfFileName, setPdfFileName] = useState(null);
 
   // Handle File Upload
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    console.log(file);
+    setPdfFileName(file.name);
     if (file && file.type === "application/pdf") {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -102,6 +103,7 @@ const UserDashboard = () => {
           pdfFile={pdfFile}
           images={images}
           setImages={setImages}
+          pdfFileName={pdfFileName}
         />
       )}
 

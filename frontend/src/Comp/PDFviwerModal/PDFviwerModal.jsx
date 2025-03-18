@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const PDFViewerModal = ({ setShowModal, images }) => {
+const PDFViewerModal = ({ setShowModal, images, pdfFileName }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [saving, setSaving] = useState(false);
 
@@ -36,7 +36,7 @@ const PDFViewerModal = ({ setShowModal, images }) => {
 
     try {
       const formData = new FormData();
-      formData.append("pdfName", "default_pdf_name.pdf");
+      formData.append("pdfName", pdfFileName);
 
       // Convert base64 images to Blob and append them
       images.forEach((image, index) => {
@@ -58,7 +58,6 @@ const PDFViewerModal = ({ setShowModal, images }) => {
         }
       );
 
-      console.log(response);
       alert("PDF saved successfully!");
     } catch (error) {
       console.error("Error saving PDF:", error);
@@ -81,7 +80,7 @@ const PDFViewerModal = ({ setShowModal, images }) => {
 
     return new Blob([arrayBuffer], { type: mimeString });
   };
-  
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
       <div className="relative bg-white rounded-lg shadow-lg w-[80%] max-w-4xl p-6">
