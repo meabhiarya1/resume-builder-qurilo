@@ -12,7 +12,7 @@ const Navbar = () => {
         {user && (
           <>
             <span className="mr-4">Hello, {user?.name}</span>
-            <button onClick={logout} className="bg-red-500 px-3 py-1 rounded">
+            <button onClick={logout} className="bg-red-500 px-3 py-1 rounded cursor-pointer">
               Logout
             </button>
           </>
