@@ -5,6 +5,7 @@ import * as pdfjs from "pdfjs-dist";
 import "pdfjs-dist/build/pdf.worker.entry"; // ✅ Ensure the worker is loaded
 import UserTotalResume from "../UserTotalResume/UserTotalResume";
 import PDFViewerModalStatic from "../PDFviwerModalStatic/PDFviwerModalStatic";
+import axios from "axios";
 
 // ✅ Manually set the workerSrc correctly
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -20,6 +21,7 @@ const UserDashboard = () => {
   const [pdfFileName, setPdfFileName] = useState(null);
   const [selectedResume, setSelectedResume] = useState(null);
   const [showModalModalStatic, setShowModalModalStatic] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const handleViewResume = (pdf) => {
     setSelectedResume(pdf);
@@ -73,6 +75,94 @@ const UserDashboard = () => {
     }
   };
 
+  const handleDeleteResume = async (id) => {
+    if (!id) {
+      alert("Invalid PDF ID!"); // Show error if ID is missing
+      return;
+    }
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this resume?"
+    );
+    if (!confirmDelete) return; // Stop if user cancels
+
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/api/pdfs/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure authenticated request
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        alert("Resume deleted successfully!");
+        // Optionally, remove the PDF from state after deletion
+        setPdfsInfo((prevPdfs) => prevPdfs.filter((pdf) => pdf._id !== id));
+      } else {
+        console.log("Failed to delete resume. Please try again.");
+        // toast.error("Failed to delete resume. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error deleting resume:", error);
+      // toast.error("An error occurred while deleting the resume.");
+    } finally {
+      setShowModalModalStatic(false);
+    }
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    const token = localStorage.getItem("token");
+
+    try {
+      const formData = new FormData();
+      formData.append("pdfName", pdfFileName);
+
+      // Convert base64 images to Blob and append them
+      images.forEach((image, index) => {
+        formData.append(
+          "images",
+          dataURItoBlob(image),
+          `page-${index + 1}.png`
+        );
+      });
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/pdfs`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setPdfsInfo((prevPdfs) => [...prevPdfs, response.data.pdf]);
+      alert("PDF saved successfully!");
+    } catch (error) {
+      console.error("Error saving PDF:", error);
+      alert("Failed to save PDF");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Convert Base64 to Blob
+  const dataURItoBlob = (dataURI) => {
+    const byteString = atob(dataURI.split(",")[1]);
+    const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+
+    for (let i = 0; i < byteString.length; i++) {
+      intArray[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([arrayBuffer], { type: mimeString });
+  };
+
   useEffect(() => {
     if (pdfFile) {
       extractPagesAsImages(pdfFile);
@@ -112,6 +202,8 @@ const UserDashboard = () => {
           images={images}
           setImages={setImages}
           pdfFileName={pdfFileName}
+          handleSave={handleSave}
+          saving={saving}
         />
       )}
 
@@ -162,13 +254,13 @@ const UserDashboard = () => {
           handleViewResume={handleViewResume}
           selectedResume={selectedResume}
         />
-      
 
         {showModalModalStatic && selectedResume && (
           <PDFViewerModalStatic
             selectedResume={selectedResume}
             setShowModalModalStatic={setShowModalModalStatic}
             setSelectedResume={setSelectedResume}
+            handleDeleteResume={handleDeleteResume}
           />
         )}
       </div>

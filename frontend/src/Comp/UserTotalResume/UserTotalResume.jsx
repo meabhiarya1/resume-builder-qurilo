@@ -5,7 +5,7 @@ const UserTotalResume = ({ pdfsInfo, handleViewResume }) => {
   return (
     <div className="p-6 max-w-5xl mt-10">
       <h2 className="text-2xl font-bold mb-4 text-center">
-        Your Total Resumes
+        Total Resumes
       </h2>
 
       <div className="w-[400px] flex-shrink-0">

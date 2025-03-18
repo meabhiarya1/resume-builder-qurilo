@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const PDFViewerModal = ({ setShowModal, images, pdfFileName }) => {
+const PDFViewerModal = ({ setShowModal, images, handleSave, saving }) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -28,57 +27,6 @@ const PDFViewerModal = ({ setShowModal, images, pdfFileName }) => {
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
     }
-  };
-
-  const handleSave = async () => {
-    setSaving(true);
-    const token = localStorage.getItem("token");
-
-    try {
-      const formData = new FormData();
-      formData.append("pdfName", pdfFileName);
-
-      // Convert base64 images to Blob and append them
-      images.forEach((image, index) => {
-        formData.append(
-          "images",
-          dataURItoBlob(image),
-          `page-${index + 1}.png`
-        );
-      });
-
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/pdfs`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      alert("PDF saved successfully!");
-    } catch (error) {
-      console.error("Error saving PDF:", error);
-      alert("Failed to save PDF");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  // Convert Base64 to Blob
-  const dataURItoBlob = (dataURI) => {
-    const byteString = atob(dataURI.split(",")[1]);
-    const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const intArray = new Uint8Array(arrayBuffer);
-
-    for (let i = 0; i < byteString.length; i++) {
-      intArray[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([arrayBuffer], { type: mimeString });
   };
 
   return (

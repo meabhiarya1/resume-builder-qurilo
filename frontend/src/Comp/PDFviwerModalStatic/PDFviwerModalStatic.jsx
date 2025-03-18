@@ -4,6 +4,7 @@ const PDFViewerModalStatic = ({
   setShowModalModalStatic,
   selectedResume,
   setSelectedResume,
+  handleDeleteResume,
 }) => {
   if (!selectedResume || !selectedResume.images) return null;
 
@@ -23,7 +24,7 @@ const PDFViewerModalStatic = ({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-[9999]">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
       <div className="relative bg-white p-6 rounded-lg shadow-2xl w-[90%] max-w-5xl max-h-[90vh] overflow-hidden">
         {/* Close Button */}
         <button
@@ -62,7 +63,7 @@ const PDFViewerModalStatic = ({
           <button
             onClick={prevPage}
             disabled={currentPage === 0}
-            className={`px-4 py-2 text-white rounded-lg transition ${
+            className={`px-4 py-2 text-white rounded-lg transition cursor-pointer ${
               currentPage === 0
                 ? "bg-gray-400"
                 : "bg-blue-500 hover:bg-blue-700"
@@ -76,9 +77,18 @@ const PDFViewerModalStatic = ({
           </p>
 
           <button
+            onClick={() => handleDeleteResume(selectedResume._id)}
+            className={`px-6 py-3 text-white font-semibold rounded-lg transition duration-300 shadow-md flex items-center gap-2 cursor-pointer
+  bg-red-700 hover:bg-red-850 active:bg-red-800 transform hover:scale-105
+ `}
+          >
+            🗑️ Delete Resume
+          </button>
+
+          <button
             onClick={nextPage}
             disabled={currentPage === images.length - 1}
-            className={`px-4 py-2 text-white rounded-lg transition ${
+            className={`px-4 py-2 text-white rounded-lg transition cursor-pointer ${
               currentPage === images.length - 1
                 ? "bg-gray-400"
                 : "bg-blue-500 hover:bg-blue-700"
