@@ -1,11 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import TotalUsers from "../TotalUsers/TotalUsers";
 import Templates from "../Templates/Templates";
 import Upload from "../TemplateUplods/Uploads";
+import axios from "axios";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const config = token
+          ? { headers: { Authorization: `Bearer ${token}` } }
+          : {};
+
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/auth/users`,
+          config
+        );
+        setUsers(data);
+      } catch (err) {
+        setError(err.response?.data?.message || "Error fetching users");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   return (
     <div>
@@ -24,13 +51,9 @@ const AdminDashboard = () => {
                 active:scale-[0.995] w-full cursor-pointer`}
                 onClick={() => setActiveTab(tab)}
               >
-                <div
-                  className="bg-gradient-to-b from-stone-200/40 to-white/80 rounded-[8px] px-2 py-2"
-                >
+                <div className="bg-gradient-to-b from-stone-200/40 to-white/80 rounded-[8px] px-2 py-2">
                   <div className="flex gap-2 items-center justify-center">
-                    <span className="font-semibold capitalize">
-                      {tab}
-                    </span>
+                    <span className="font-semibold capitalize">{tab}</span>
                   </div>
                 </div>
               </button>
@@ -40,7 +63,9 @@ const AdminDashboard = () => {
 
         {/* Main Content (2/3) */}
         <div className="col-span-3 p-4">
-          {activeTab === "users" && <TotalUsers />}
+          {activeTab === "users" && (
+            <TotalUsers users={users} loading={loading} error={error} />
+          )}
           {activeTab === "templates" && <Templates />}
           {activeTab === "uploads" && <Upload />}
         </div>
