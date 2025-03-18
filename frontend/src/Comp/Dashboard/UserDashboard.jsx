@@ -23,7 +23,7 @@ const UserDashboard = () => {
 
   const handleViewResume = (pdf) => {
     setSelectedResume(pdf);
-    setShowModal(true);
+    setShowModalModalStatic(true);
   };
 
   // Handle File Upload
@@ -162,11 +162,13 @@ const UserDashboard = () => {
           handleViewResume={handleViewResume}
           selectedResume={selectedResume}
         />
+      
 
         {showModalModalStatic && selectedResume && (
           <PDFViewerModalStatic
             selectedResume={selectedResume}
             setShowModalModalStatic={setShowModalModalStatic}
+            setSelectedResume={setSelectedResume}
           />
         )}
       </div>
