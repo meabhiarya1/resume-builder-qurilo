@@ -29,6 +29,7 @@ const UserDashboard = () => {
       alert("Please upload a valid PDF file.");
     }
   };
+  
   // ✅ Extract PDF Pages as Images
   const extractPagesAsImages = async (pdfFile) => {
     try {
