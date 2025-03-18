@@ -28,7 +28,7 @@ const TotalUsers = ({ loading, users, error, handleUserPdfs }) => {
               <div className="flex px-6 pb-8 sm:px-8 ">
                 <button
                   className="cursor-pointer flex items-center justify-center w-full px-6 py-2.5 text-center text-white duration-200 bg-black border-2 border-black rounded-full hover:bg-transparent hover:border-black hover:text-black focus:outline-none focus-visible:outline-black text-sm focus-visible:ring-black"
-                  onClick={() => handleUserPdfs(user._id)}
+                  onClick={() => handleUserPdfs(user)}
                 >
                   View Profile
                 </button>

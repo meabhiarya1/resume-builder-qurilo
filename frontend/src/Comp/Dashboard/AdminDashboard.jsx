@@ -8,13 +8,14 @@ import axios from "axios";
 import UserResumePDFViewerModalStatic from "../AdminModals/UsersResumeModals/UserResumePDFViewerModalStatic";
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState(null);
+  const [activeTab, setActiveTab] = useState("users");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pdfData, setPdfData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedResume, setSelectedResume] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [showModalModalStatic, setShowModalModalStatic] = useState(false);
   const token = localStorage.getItem("token");
 
@@ -36,12 +37,12 @@ const AdminDashboard = () => {
     fetchUsers();
   }, []);
 
-  const handleUserPdfs = async (id) => {
+  const handleUserPdfs = async (user) => {
     try {
       const token = localStorage.getItem("token"); // Get token from storage
-
+      setSelectedUser(user);
       const { data } = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/api/pdfs/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/api/pdfs/${user._id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -102,6 +103,7 @@ const AdminDashboard = () => {
           setIsModalOpen={setIsModalOpen}
           setSelectedResume={setSelectedResume}
           setShowModalModalStatic={setShowModalModalStatic}
+          selectedUser={selectedUser}
         />
       )}
 

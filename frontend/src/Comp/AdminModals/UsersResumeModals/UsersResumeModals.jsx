@@ -5,6 +5,7 @@ const UsersResumeModals = ({
   setIsModalOpen,
   setSelectedResume,
   setShowModalModalStatic,
+  selectedUser,
 }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-invert backdrop-opacity-30 backdrop-blur-sm z-50">
@@ -12,7 +13,12 @@ const UsersResumeModals = ({
       <div className="w-[600px] p-4 relative flex flex-col items-center justify-center bg-gray-800 border border-gray-700 shadow-lg rounded-2xl">
         {/* Modal Content */}
         <div className="text-center p-3 flex-auto justify-center">
-          <h2 className="text-xl font-bold py-4 text-gray-200">User Resumes</h2>
+          <h2 className="text-xl font-bold py-4 text-gray-200">
+            {selectedUser.name}'s Resumes
+          </h2>{" "}
+          <p className="text-md text-gray-300 px-2 mb-2">
+           {selectedUser.email}
+          </p>
           <p className="text-sm text-gray-400 px-2">
             Here are the uploaded resumes. Click "Show Details" to view more.
           </p>
