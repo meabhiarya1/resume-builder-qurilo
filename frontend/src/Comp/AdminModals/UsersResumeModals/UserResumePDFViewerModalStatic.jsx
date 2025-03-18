@@ -23,8 +23,8 @@ const UserResumePDFViewerModalStatic = ({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bbg-black/70 backdrop-invert backdrop-opacity-30 backdrop-blur-sm z-50">
-      <div className="relative bg-white p-6 rounded-lg shadow-2xl w-[90%] max-w-5xl max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-invert backdrop-opacity-30 backdrop-blur-sm z-50">
+      <div className="relative bg-white p-4 rounded-lg shadow-2xl w-[90%] max-w-5xl max-h-[90vh] overflow-hidden">
         {/* Close Button */}
         <button
           onClick={() => {
@@ -36,7 +36,7 @@ const UserResumePDFViewerModalStatic = ({
           ✖
         </button>
 
-        <h2 className="text-2xl font-bold mb-4 text-center">
+        <h2 className="text-2xl font-bold mb-1 text-center">
           {selectedResume.pdfName}
         </h2>
 
