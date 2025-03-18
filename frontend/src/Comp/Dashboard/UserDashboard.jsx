@@ -18,6 +18,7 @@ const UserDashboard = () => {
   // Handle File Upload
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
+    console.log(file)
     if (file && file.type === "application/pdf") {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -113,6 +114,7 @@ const UserDashboard = () => {
           setShowModal={setShowModal}
           pdfFile={pdfFile}
           images={images}
+          setImages={setImages}
         />
       )}
     </div>
