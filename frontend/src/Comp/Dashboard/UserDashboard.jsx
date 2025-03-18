@@ -163,10 +163,9 @@ const UserDashboard = () => {
           selectedResume={selectedResume}
         />
 
-        {showModal && selectedResume && (
+        {showModalModalStatic && selectedResume && (
           <PDFViewerModalStatic
             selectedResume={selectedResume}
-            showModalModalStatic={showModalModalStatic}
             setShowModalModalStatic={setShowModalModalStatic}
           />
         )}

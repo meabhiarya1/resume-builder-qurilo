@@ -1,12 +1,6 @@
 import React from "react";
 
-const PDFViewerModalStatic = ({
-  showModalModalStatic,
-  setShowModalModalStatic,
-  selectedResume,
-}) => {
-  if (!isOpen) return null;
-
+const PDFViewerModalStatic = ({ setShowModalModalStatic, selectedResume }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-[9999]">
       <h2 className="text-xl font-bold mb-2">{selectedResume.pdfName}</h2>
@@ -23,11 +17,11 @@ const PDFViewerModalStatic = ({
 
         {/* PDF Embed with Scrollable Container */}
         <div className="h-[80vh] overflow-auto border rounded-lg shadow-md">
-          <iframe
+          {/* <iframe
             src={pdfUrl}
             title="PDF Viewer"
             className="w-full h-full"
-          ></iframe>
+          ></iframe> */}
         </div>
       </div>
     </div>
