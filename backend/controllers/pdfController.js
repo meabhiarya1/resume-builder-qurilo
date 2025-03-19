@@ -99,3 +99,36 @@ exports.deletePDF = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// ❌ Delete a Template
+exports.deleteTemplatePDF = async (req, res) => {
+  try {
+    const pdf = await PDF.findById(req.params.id);
+    if (!pdf) return res.status(404).json({ message: "PDF not found" });
+
+    // Loop through and delete all associated images
+    if (pdf.images && pdf.images.length > 0) {
+      pdf.images.forEach((image) => {
+        const imagePath = path.join(
+          __dirname,
+          "..",
+          image.path.replace(/\\/g, "/")
+        );
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath); // Delete image file
+          console.log(`Deleted image: ${imagePath}`);
+        } else {
+          console.log(`Image not found: ${imagePath}`);
+        }
+      });
+    }
+
+    // Delete PDF document from MongoDB
+    await pdf.deleteOne();
+
+    res.json({ message: "PDF and associated images deleted successfully!" });
+  } catch (error) {
+    console.error("Error deleting PDF and images:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

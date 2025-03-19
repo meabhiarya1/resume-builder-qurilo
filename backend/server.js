@@ -14,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/templates", express.static(path.join(__dirname, "Templates")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/pdfs", pdfRoutes);
