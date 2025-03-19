@@ -6,6 +6,7 @@ import "pdfjs-dist/build/pdf.worker.entry"; // ✅ Ensure the worker is loaded
 import UserTotalResume from "../UserTotalResume/UserTotalResume";
 import PDFViewerModalStatic from "../PDFviwerModalStatic/PDFviwerModalStatic";
 import axios from "axios";
+import UserTotalTemplate from "../UserTotalTemplate/UserTotalTemplate";
 
 // ✅ Manually set the workerSrc correctly
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -21,6 +22,7 @@ const UserDashboard = () => {
   const [pdfFileName, setPdfFileName] = useState(null);
   const [selectedResume, setSelectedResume] = useState(null);
   const [showModalModalStatic, setShowModalModalStatic] = useState(false);
+  const [templates, setTemplates] = useState([]);
   const [saving, setSaving] = useState(false);
 
   const handleViewResume = (pdf) => {
@@ -163,6 +165,23 @@ const UserDashboard = () => {
     return new Blob([arrayBuffer], { type: mimeString });
   };
 
+  const fetchTemplates = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/pdfs/admin/templates`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("Templates Data:", response.data); 
+      setTemplates(response.data.templates)
+    } catch (error) {
+      console.error("Error fetching templates:", error);
+    }
+  };
+
   useEffect(() => {
     if (pdfFile) {
       extractPagesAsImages(pdfFile);
@@ -189,6 +208,11 @@ const UserDashboard = () => {
     fetchedData();
   }, []);
 
+  useEffect(() => {
+    fetchTemplates();
+  }, []);
+
+
   return (
     <div className="h-screen flex flex-col ">
       {/* Navbar */}
@@ -208,7 +232,13 @@ const UserDashboard = () => {
       )}
 
       <div className="flex  flex-grow ">
-        <UserTotalResume pdfsInfo={pdfsInfo} />
+        <UserTotalResume
+          pdfsInfo={pdfsInfo}
+          handleViewResume={handleViewResume}
+          selectedResume={selectedResume}
+        />
+
+        <UserTotalTemplate templates={templates} handleViewResume={handleViewResume} />
 
         {/* Upload Section */}
         <div className="flex flex-grow items-center justify-center ">
@@ -248,12 +278,6 @@ const UserDashboard = () => {
             </div>
           </div>
         </div>
-
-        <UserTotalResume
-          pdfsInfo={pdfsInfo}
-          handleViewResume={handleViewResume}
-          selectedResume={selectedResume}
-        />
 
         {showModalModalStatic && selectedResume && (
           <PDFViewerModalStatic

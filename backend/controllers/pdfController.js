@@ -1,4 +1,5 @@
 const PDF = require("../models/PDF");
+const User = require("../models/User");
 const fs = require("fs");
 const path = require("path");
 
@@ -130,5 +131,37 @@ exports.deleteTemplatePDF = async (req, res) => {
   } catch (error) {
     console.error("Error deleting PDF and images:", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+// 📂 Get all PDFs from admin
+exports.getAdminTemplates = async (req, res) => {
+  try {
+    // Step 1: Find the first admin user
+    const adminUser = await User.findOne({ role: "admin" });
+
+    if (!adminUser) {
+      return res.status(404).json({ message: "No admin user found." });
+    }
+
+    // Step 2: Fetch all PDFs where the admin ID matches
+    const adminPDFs = await PDF.find({ userId: adminUser._id });
+
+    if (adminPDFs.length === 0) {
+      return res.status(404).json({ message: "No PDFs found for this admin." });
+    }
+
+    // Step 3: Send the PDFs in the response
+    return res.status(200).json({
+      admin: {
+        id: adminUser._id,
+        name: adminUser.name,
+        email: adminUser.email,
+      },
+      templates: adminPDFs,
+    });
+  } catch (error) {
+    console.error("Error fetching admin templates:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
