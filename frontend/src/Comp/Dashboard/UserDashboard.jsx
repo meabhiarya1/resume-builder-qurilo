@@ -25,6 +25,7 @@ const UserDashboard = () => {
   const [templates, setTemplates] = useState([]);
   const [saving, setSaving] = useState(false);
 
+  // Handle View Resume
   const handleViewResume = (pdf) => {
     setSelectedResume(pdf);
     setShowModalModalStatic(true);
