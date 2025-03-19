@@ -4,7 +4,7 @@ import { Trash2, Eye } from "lucide-react";
 const Templates = ({
   templatePdfsInfo,
   handleViewResume,
-  handleDeleteResume,
+  handleDeleteResumeTemplate,
 }) => {
   return (
     <div className="px-6">
@@ -34,7 +34,7 @@ const Templates = ({
 
               {/* Delete Button */}
               <button
-                onClick={() => handleDeleteResume(pdf._id)}
+                onClick={() => handleDeleteResumeTemplate(pdf._id)}
                 className="flex items-center justify-center gap-2 bg-red-600 px-4 py-2 rounded-md text-sm font-medium w-full  text-white hover:text-black transition cursor-pointer"
               >
                 <Trash2 size={18} />

@@ -7,6 +7,7 @@ import AdminDashboard from "./Comp/Dashboard/AdminDashboard";
 import Notfound from "./Comp/Notfound/Notfound";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
+import ImageTextExtractor from "./Comp/ImageTextExtractor/ImageTextExtractor";
 
 function App() {
   return (
@@ -30,7 +31,9 @@ function RoutesComponent() {
           user?.role === "admin" ? <AdminDashboard /> : <UserDashboard />
         }
       />
+      <Route path="/upload" element={<ImageTextExtractor />} />
       <Route path="*" element={<Notfound />} />
+      
     </Routes>
   );
 }

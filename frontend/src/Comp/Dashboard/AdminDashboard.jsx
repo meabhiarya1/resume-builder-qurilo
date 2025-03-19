@@ -101,7 +101,7 @@ const AdminDashboard = () => {
     setShowModalModalStatic(true);
   };
 
-  const handleDeleteResume = async (id) => {
+  const handleDeleteResumeTemplate = async (id) => {
     if (!id) {
       alert("Invalid PDF ID!"); // Show error if ID is missing
       return;
@@ -254,9 +254,10 @@ const AdminDashboard = () => {
             <Templates
               templatePdfsInfo={templatePdfsInfo}
               handleViewResume={handleViewResume}
-              handleDeleteResume={handleDeleteResume}
+              handleDeleteResumeTemplate={handleDeleteResumeTemplate}
             />
           )}
+          
           {activeTab === "uploads" && (
             <Upload
               handleSave={handleSave}

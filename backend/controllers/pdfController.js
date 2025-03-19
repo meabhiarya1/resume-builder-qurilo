@@ -136,6 +136,7 @@ exports.deleteTemplatePDF = async (req, res) => {
 
 // 📂 Get all PDFs from admin
 exports.getAdminTemplates = async (req, res) => {
+
   try {
     // Step 1: Find the first admin user
     const adminUser = await User.findOne({ role: "admin" });

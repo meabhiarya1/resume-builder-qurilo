@@ -8,7 +8,6 @@ const UserResumePDFViewerModalStatic = ({
   if (!selectedResume || !selectedResume.images) return null;
 
   const images = selectedResume.images;
-  console.log(images)
   const [currentPage, setCurrentPage] = useState(0);
 
   const nextPage = () => {

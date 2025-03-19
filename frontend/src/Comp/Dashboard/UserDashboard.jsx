@@ -23,6 +23,7 @@ const UserDashboard = () => {
   const [selectedResume, setSelectedResume] = useState(null);
   const [showModalModalStatic, setShowModalModalStatic] = useState(false);
   const [templates, setTemplates] = useState([]);
+  const [selectedResumeType, setSelectedResumeType] = useState("");
   const [saving, setSaving] = useState(false);
 
   // Handle View Resume
@@ -176,8 +177,8 @@ const UserDashboard = () => {
           },
         }
       );
-      console.log("Templates Data:", response.data); 
-      setTemplates(response.data.templates)
+      console.log("Templates Data:", response.data);
+      setTemplates(response.data.templates);
     } catch (error) {
       console.error("Error fetching templates:", error);
     }
@@ -213,7 +214,6 @@ const UserDashboard = () => {
     fetchTemplates();
   }, []);
 
-
   return (
     <div className="h-screen flex flex-col ">
       {/* Navbar */}
@@ -237,9 +237,14 @@ const UserDashboard = () => {
           pdfsInfo={pdfsInfo}
           handleViewResume={handleViewResume}
           selectedResume={selectedResume}
+          setSelectedResumeType={setSelectedResumeType}
         />
 
-        <UserTotalTemplate templates={templates} handleViewResume={handleViewResume} />
+        <UserTotalTemplate
+          templates={templates}
+          handleViewResume={handleViewResume}
+          setSelectedResumeType={setSelectedResumeType}
+        />
 
         {/* Upload Section */}
         <div className="flex flex-grow items-center justify-center ">
@@ -286,6 +291,7 @@ const UserDashboard = () => {
             setShowModalModalStatic={setShowModalModalStatic}
             setSelectedResume={setSelectedResume}
             handleDeleteResume={handleDeleteResume}
+            selectedResumeType={selectedResumeType}
           />
         )}
       </div>

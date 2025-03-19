@@ -15,10 +15,20 @@ exports.protect = async (req, res, next) => {
   }
 };
 
-exports.adminOnly = (req, res, next) => {
-  if (req.user && req.user.role === "admin") {
+exports.adminOnly = async (req, res, next) => {
+  let token = req.headers.authorization;
+  if (!token || !token.startsWith("Bearer "))
+    return res.status(401).json({ message: "Not authorized" });
+
+  try {
+    const decoded = jwt.verify(token.split(" ")[1], process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select("-password");
+
+    if (req.user.role !== "admin") {
+      return res.status(401).json({ message: "Not authorized" });
+    }
     next();
-  } else {
-    res.status(403).json({ message: "Access denied" });
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
   }
 };

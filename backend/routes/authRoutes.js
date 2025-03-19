@@ -12,6 +12,6 @@ const router = express.Router();
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/profile", protect, getUserProfile);
-router.get("/users", protect, adminOnly, getAllUsers);
+router.get("/users", adminOnly, getAllUsers);
 
 module.exports = router;

@@ -5,6 +5,7 @@ const PDFViewerModalStatic = ({
   selectedResume,
   setSelectedResume,
   handleDeleteResume,
+  selectedResumeType,
 }) => {
   if (!selectedResume || !selectedResume.images) return null;
 
@@ -76,14 +77,18 @@ const PDFViewerModalStatic = ({
             Page {currentPage + 1} of {images.length}
           </p>
 
-          <button
-            onClick={() => handleDeleteResume(selectedResume._id)}
-            className={`px-6 py-3 text-white font-semibold rounded-lg transition duration-300 shadow-md flex items-center gap-2 cursor-pointer
+          {selectedResumeType === "Resumes" && (
+            <button
+              onClick={() => handleDeleteResume(selectedResume._id)}
+              className={`px-6 py-3 text-white font-semibold rounded-lg transition duration-300 shadow-md flex items-center gap-2 cursor-pointer
   bg-red-700 hover:bg-red-850 active:bg-red-800 transform hover:scale-105
  `}
-          >
-            🗑️ Delete Resume
-          </button>
+            >
+              🗑️ Delete Resume
+            </button>
+          )}
+
+          {console.log(selectedResumeType)}
 
           <button
             onClick={nextPage}

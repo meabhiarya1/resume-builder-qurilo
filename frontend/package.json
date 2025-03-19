@@ -10,19 +10,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ilovepdf/ilovepdf-nodejs": "^0.3.0",
     "@react-pdf-viewer/core": "^3.12.0",
     "@react-pdf-viewer/default-layout": "^3.12.0",
     "@tailwindcss/vite": "^4.0.14",
     "axios": "^1.8.3",
+    "jodit-react": "^5.2.15",
     "lucide-react": "^0.483.0",
     "pdf-lib": "^1.17.1",
     "pdf-viewer-reactjs": "^2.2.3",
     "pdfjs-dist": "^2.16.105",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-dropzone": "^14.3.8",
     "react-pdf": "^6.2.2",
     "react-router-dom": "^7.3.0",
-    "tailwindcss": "^4.0.14"
+    "tailwindcss": "^4.0.14",
+    "tesseract.js": "^6.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
