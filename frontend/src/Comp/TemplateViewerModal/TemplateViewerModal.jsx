@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 
-const PDFViewerModal = ({
-  setShowModal,
+const TemplateViewerModal = ({
+  setShowTemplateModal,
   images,
+  setImages,
   handleSave,
   saving,
-  setImages,
 }) => {
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -41,15 +41,15 @@ const PDFViewerModal = ({
         <button
           onClick={() => {
             setImages([]);
-            setShowModal(false);
+            setShowTemplateModal(false);
           }}
           className="absolute top-3 right-4 text-gray-500 hover:text-gray-800 transition text-lg cursor-pointer"
         >
           ✖
         </button>
 
-        {/* PDF Viewer */}
-        <p className="text-gray-700 font-semibold flex justify-center ">
+        {/* Template Viewer */}
+        <p className="text-gray-700 font-semibold flex justify-center">
           Page {currentPage + 1} of {images.length}
         </p>
         {images.length > 0 ? (
@@ -57,7 +57,7 @@ const PDFViewerModal = ({
             <div className="overflow-auto max-h-[700px] w-full border rounded-lg p-2">
               <img
                 src={images[currentPage]}
-                alt={`Page ${currentPage + 1}`}
+                alt={`Template Page ${currentPage + 1}`}
                 className="block mx-auto"
               />
             </div>
@@ -81,18 +81,19 @@ const PDFViewerModal = ({
                 disabled={saving}
                 className="px-4 py-2 bg-green-500 hover:bg-green-700 text-white rounded-lg transition cursor-pointer"
               >
-                {saving ? "Saving..." : "💾 Save PDF"}
+                {saving ? "Saving..." : "💾 Save Template"}
               </button>
 
               <button
                 onClick={() => {
                   setImages([]);
-                  setShowModal(false);
+                  setShowTemplateModal(false);
                 }}
                 className="cursor-pointer px-4 py-2 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold rounded-lg shadow-md transition-transform transform hover:scale-105"
               >
                 💾 Upload Again
               </button>
+
               <button
                 onClick={nextPage}
                 disabled={currentPage === images.length - 1}
@@ -107,11 +108,13 @@ const PDFViewerModal = ({
             </div>
           </div>
         ) : (
-          <p className="text-gray-500 text-center">Extracting pages...</p>
+          <p className="text-gray-500 text-center">
+            Loading Template preview...
+          </p>
         )}
       </div>
     </div>
   );
 };
 
-export default PDFViewerModal;
+export default TemplateViewerModal;
