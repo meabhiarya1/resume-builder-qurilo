@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Tesseract from "tesseract.js";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Quill editor styles
@@ -17,7 +17,9 @@ const PDFViewerModalStatic = ({
   const images = selectedResume.images;
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [pageData, setPageData] = useState({}); // Store extracted data per page
+  const [pageData, setPageData] = useState({}); // Stores extracted & edited content for each page
+  const quillRefs = useRef({}); // Store refs for each page's editor
+  const [textLoaded, setTextLoaded] = useState(false); // Ensure first page is loaded properly
 
   useEffect(() => {
     extractAllPagesData(); // Extract data for all pages at once
@@ -46,29 +48,44 @@ const PDFViewerModalStatic = ({
       }
     }
 
-    setPageData(extractedData); // Save all extracted data in state
+    setPageData(extractedData); // Save extracted data in state
+    setTextLoaded(true); // Ensure first page is displayed
     setLoading(false);
   };
 
+  useEffect(() => {
+    if (textLoaded && quillRefs.current[currentPage]) {
+      quillRefs.current[currentPage].getEditor().root.innerHTML =
+        pageData[currentPage] || "";
+    }
+  }, [currentPage, textLoaded]);
+
   const nextPage = () => {
+    // Save current page content before switching
+    if (quillRefs.current[currentPage]) {
+      setPageData((prev) => ({
+        ...prev,
+        [currentPage]:
+          quillRefs.current[currentPage].getEditor().root.innerHTML,
+      }));
+    }
     if (currentPage < images.length - 1) {
       setCurrentPage((prev) => prev + 1);
     }
   };
 
   const prevPage = () => {
+    // Save current page content before switching
+    if (quillRefs.current[currentPage]) {
+      setPageData((prev) => ({
+        ...prev,
+        [currentPage]:
+          quillRefs.current[currentPage].getEditor().root.innerHTML,
+      }));
+    }
     if (currentPage > 0) {
       setCurrentPage((prev) => prev - 1);
     }
-  };
-
-  const handleTextChange = (content) => {
-    // setPageData((prev) => {
-    //   return {
-    //     ...prev,
-    //     [currentPage]: content, // Ensure the correct page's data is updated
-    //   };
-    // });
   };
 
   const handleDownloadPDF = async () => {
@@ -83,7 +100,10 @@ const PDFViewerModalStatic = ({
 
       if (pageElement) {
         try {
-          const canvas = await html2canvas(pageElement, { scale: 2 });
+          const canvas = await html2canvas(pageElement, {
+            scale: 2,
+            useCORS: true,
+          });
           imgData = canvas.toDataURL("image/png");
         } catch (error) {
           console.error("Error capturing canvas:", error);
@@ -161,11 +181,11 @@ const PDFViewerModalStatic = ({
                 id={`resume-page-${currentPage}`}
                 className="absolute bg-white shadow-md p-3 rounded-lg w-full"
               >
-                {console.log(pageData[currentPage])}
-                {/* React-Quill Editor */}
+                {/* ReactQuill Editor with useRef */}
                 <ReactQuill
-                  value={pageData[currentPage] || ""}
-                  onChange={handleTextChange}
+                  key={currentPage} // Forces re-render when page changes
+                  ref={(el) => (quillRefs.current[currentPage] = el)}
+                  defaultValue={pageData[currentPage] || ""}
                   modules={{
                     toolbar: [
                       [{ header: [1, 2, 3, false] }],
@@ -252,6 +272,7 @@ const PDFViewerModalStatic = ({
           </button>
         </div>
       </div>
+      {/* {isUpdating && <p className="text-center text-gray-600">Saving...</p>} */}
     </div>
   );
 };
