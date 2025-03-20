@@ -54,7 +54,7 @@ const TemplateViewerModal = ({
         </p>
         {images.length > 0 ? (
           <div className="flex flex-col items-center">
-            <div className="overflow-auto max-h-[650px] w-full border rounded-lg p-2">
+            <div className="overflow-auto max-h-[80vh] w-full border rounded-lg p-2">
               <img
                 src={images[currentPage]}
                 alt={`Template Page ${currentPage + 1}`}
