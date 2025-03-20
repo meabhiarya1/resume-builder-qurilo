@@ -140,20 +140,19 @@ const PDFViewerModalStatic = ({
 
           {/* Right Side: Extracted Text Container */}
           <div className="w-1/2 p-2 mt-[48px] flex flex-col overflow-auto bg-gray-100 border border-gray-300 rounded-lg relative">
-            <div className="relative">
+            <div className="relative ">
               {editorContent.length > 0 ? (
                 editorContent.map((word, index) => (
                   <div
                     key={index}
                     contentEditable={true}
                     suppressContentEditableWarning={true}
-                    className="absolute bg-white/80 p-1 rounded-md"
+                    className="absolute bg-white/80 p-4 rounded-md w-full"
                     style={{
                       left: `${word.x * 0.8}px`, // SCALING FACTOR
                       top: `${word.y * 0.8}px`, // SCALING FACTOR
                       fontSize: `${word.height * 0.8}px`, // SCALING TEXT SIZE
                       minWidth: `${word.width}px`, // Preserve width
-                      fontFamily: "mono",
                     }}
                     dangerouslySetInnerHTML={{ __html: word.text }}
                     onInput={(e) => {
