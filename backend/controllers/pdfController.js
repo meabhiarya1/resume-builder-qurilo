@@ -162,6 +162,22 @@ exports.deleteTemplatePDF = async (req, res) => {
       });
     }
 
+    if (pdf.pdfName) {
+      const imagePath = path.join(
+        __dirname,
+        "..",
+        "ResumeUserPDF",
+        pdf.pdfName
+      );
+
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath); // Delete image file
+        console.log(`Deleted image: ${imagePath}`);
+      } else {
+        console.log(`Image not found: ${imagePath}`);
+      }
+    }
+
     // Delete PDF document from MongoDB
     await pdf.deleteOne();
 
