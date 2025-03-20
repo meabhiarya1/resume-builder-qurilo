@@ -218,9 +218,9 @@ const AdminDashboard = () => {
       });
 
       // Debugging: Log FormData to verify PDF is being sent
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
+      // for (const pair of formData.entries()) {
+      //   console.log(pair[0], pair[1]);
+      // }
 
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/pdfs`,
