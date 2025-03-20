@@ -53,8 +53,8 @@ const PDFViewerModal = ({
           Page {currentPage + 1} of {images.length}
         </p>
         {images.length > 0 ? (
-          <div className="flex flex-col items-center">
-            <div className="overflow-auto max-h-[700px] w-full border rounded-lg p-2">
+          <div className="flex flex-col items-center max-h-[80vh]">
+            <div className="overflow-auto max-h-[80vh] w-full border rounded-lg p-2">
               <img
                 src={images[currentPage]}
                 alt={`Page ${currentPage + 1}`}
