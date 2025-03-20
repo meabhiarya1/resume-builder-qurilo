@@ -17,6 +17,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 const UserDashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [pdfFile, setPdfFile] = useState(null);
+  const [pdf, setPdf] = useState(null);
   const [images, setImages] = useState([]);
   const [pdfsInfo, setPdfsInfo] = useState([]);
   const [pdfFileName, setPdfFileName] = useState(null);
@@ -32,20 +33,42 @@ const UserDashboard = () => {
     setShowModalModalStatic(true);
   };
 
-  // Handle File Upload
+  // // Handle File Upload
+  // const handleFileUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   setPdfFileName(file.name);
+  //   if (file && file.type === "application/pdf") {
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       setPdfFile(e.target.result); // Ensure the file is in base64 format
+  //       setShowModal(true);
+  //     };
+  //     reader.readAsDataURL(file); // Read file as Base64
+  //   } else {
+  //     alert("Please upload a valid PDF file.");
+  //   }
+  // };
+
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    setPdfFileName(file.name);
-    if (file && file.type === "application/pdf") {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPdfFile(e.target.result); // Ensure the file is in base64 format
-        setShowModal(true);
-      };
-      reader.readAsDataURL(file); // Read file as Base64
-    } else {
+
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
       alert("Please upload a valid PDF file.");
+      return;
     }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setPdfFile(e.target.result);
+      setShowModal(true);
+    };
+    reader.readAsDataURL(file); // Read file as Base64
+
+    setPdfFileName(file.name);
+    setPdf(file); // Store file directly instead of Base64
+    setShowModal(true);
   };
 
   // ✅ Extract PDF Pages as Images
@@ -121,8 +144,15 @@ const UserDashboard = () => {
     const token = localStorage.getItem("token");
 
     try {
+      if (!pdf) {
+        alert("No PDF file selected!");
+        setSaving(false);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("pdfName", pdfFileName);
+      formData.append("pdf", pdf); // Ensure the PDF file is appended
 
       // Convert base64 images to Blob and append them
       images.forEach((image, index) => {
@@ -132,6 +162,11 @@ const UserDashboard = () => {
           `page-${index + 1}.png`
         );
       });
+
+      // Debugging: Log FormData to verify PDF is being sent
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
 
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/pdfs`,
@@ -143,6 +178,7 @@ const UserDashboard = () => {
           },
         }
       );
+
       setPdfsInfo((prevPdfs) => [...prevPdfs, response.data.pdf]);
       alert("PDF saved successfully!");
     } catch (error) {
@@ -152,6 +188,43 @@ const UserDashboard = () => {
       setSaving(false);
     }
   };
+
+  // const handleSave = async () => {
+  //   setSaving(true);
+  //   const token = localStorage.getItem("token");
+
+  //   try {
+  //     const formData = new FormData();
+  //     formData.append("pdfName", pdfFileName);
+
+  //     // Convert base64 images to Blob and append them
+  //     images.forEach((image, index) => {
+  //       formData.append(
+  //         "images",
+  //         dataURItoBlob(image),
+  //         `page-${index + 1}.png`
+  //       );
+  //     });
+
+  //     const response = await axios.post(
+  //       `${import.meta.env.VITE_BASE_URL}/api/pdfs`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     setPdfsInfo((prevPdfs) => [...prevPdfs, response.data.pdf]);
+  //     alert("PDF saved successfully!");
+  //   } catch (error) {
+  //     console.error("Error saving PDF:", error);
+  //     alert("Failed to save PDF");
+  //   } finally {
+  //     setSaving(false);
+  //   }
+  // };
 
   // Convert Base64 to Blob
   const dataURItoBlob = (dataURI) => {

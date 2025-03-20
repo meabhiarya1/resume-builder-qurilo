@@ -2,61 +2,72 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// Ensure uploads directory exists
-const uploadResDir = "uploads";
-if (!fs.existsSync(uploadResDir)) {
-  fs.mkdirSync(uploadResDir, { recursive: true });
-}
+// Function to ensure directory exists
+const ensureDirectoryExists = (dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+};
 
-const templateUploadDir = "Templates";
-if (!fs.existsSync(templateUploadDir)) {
-  fs.mkdirSync(templateUploadDir, { recursive: true });
-}
+// Define directories
+const directories = {
+  uploads: "uploads",
+  templates: "Templates",
+  resumeUserPDF: "ResumeUserPDF",
+};
+
+// Create directories if they don’t exist
+Object.values(directories).forEach(ensureDirectoryExists);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     try {
-      if (!req.user) {
-        return cb(new Error("Unauthorized: No user found in request"), null);
-      }
+      if (!req?.user)
+        return cb(new Error("Unauthorized: No user found in request"));
 
-      if (!req.user.role) {
-        return cb(new Error("Unauthorized: User role not specified"), null);
-      }
+      if (!req.user?.role)
+        return cb(new Error("Unauthorized: User role not specified"));
 
-      // Determine upload directory based on user role
-      const uploadDir =
-        req.user.role === "admin" ? templateUploadDir : uploadResDir;
+      let uploadDir;
 
-      if (!uploadDir) {
-        return cb(new Error("Upload directory is undefined"), null);
+      // Store PDFs separately
+      if (file.mimetype === "application/pdf") {
+        uploadDir = directories.resumeUserPDF;
+      } else {
+        // Determine upload directory based on user role
+        uploadDir =
+          req.user.role === "admin"
+            ? directories.templates
+            : directories.uploads;
       }
 
       cb(null, uploadDir);
     } catch (err) {
-      cb(err, null);
+      cb(err);
     }
   },
   filename: function (req, file, cb) {
     try {
-      if (!file || !file.originalname) {
-        return cb(new Error("Invalid file: File or filename missing"), null);
-      }
+      if (!file?.originalname)
+        return cb(new Error("Invalid file: File or filename missing"));
 
-      const uniqueFilename = `${Date.now()}${path.extname(file.originalname)}`;
+      const uniqueFilename = `${Date.now()}_${file.originalname}`;
       cb(null, uniqueFilename);
     } catch (err) {
-      cb(err, null);
+      cb(err);
     }
   },
 });
 
-// File Filter (Accept only images)
+// File Filter (Accept only images and PDFs)
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image/")) {
+  if (
+    file.mimetype.startsWith("image/") ||
+    file.mimetype === "application/pdf"
+  ) {
     cb(null, true);
   } else {
-    cb(new Error("Only image files are allowed!"), false);
+    cb(new Error("Only image and PDF files are allowed!"), false);
   }
 };
 

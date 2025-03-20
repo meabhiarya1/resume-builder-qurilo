@@ -6,27 +6,49 @@ const path = require("path");
 // 📝 Save PDF and extracted images
 exports.savePDF = async (req, res) => {
   try {
-    // Extract pdfName from the request body
-    const pdfName = req.body.pdfName;
-    if (!pdfName) {
-      return res.status(400).json({ message: "pdfName is required" });
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "No files uploaded" });
     }
 
-    // Extract images from request
-    const images = req.files.map((file) => ({
-      filename: file.filename,
-      path: file.path,
-    }));
+    let pdfFile = null;
+    const imageFiles = [];
+
+    const { images, pdf } = req.files; // ✅ Extract files
+
+    // Handle PDF (it will be an array with a single item)
+    if (pdf && pdf.length > 0) {
+      pdfFile = {
+        filename: pdf[0].filename,
+        path: pdf[0].path,
+      };
+    }
+
+    // Handle Images (images is already an array)
+    if (images && images.length > 0) {
+      images.forEach((file) => {
+        imageFiles.push({
+          filename: file.filename,
+          path: file.path,
+        });
+      });
+    }
+
+    if (!pdfFile) {
+      return res.status(400).json({ message: "PDF file is required" });
+    }
 
     // Save PDF data in the database
     const newPDF = new PDF({
       userId: req.user._id,
-      pdfName,
+      pdfName: pdfFile.filename, // Use the uploaded PDF filename
+      pdfPath: pdfFile.path, // Store the PDF path separately
       images,
     });
 
     await newPDF.save();
-    res.status(201).json({ message: "PDF saved successfully!", pdf: newPDF });
+    res
+      .status(201)
+      .json({ message: "PDF and images saved successfully!", pdf: newPDF });
   } catch (error) {
     console.error("Error saving PDF:", error);
     res.status(500).json({ message: "Server error" });
@@ -91,6 +113,22 @@ exports.deletePDF = async (req, res) => {
       });
     }
 
+    if (pdf.pdfName) {
+      const imagePath = path.join(
+        __dirname,
+        "..",
+        "ResumeUserPDF",
+        pdf.pdfName
+      );
+
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath); // Delete image file
+        console.log(`Deleted image: ${imagePath}`);
+      } else {
+        console.log(`Image not found: ${imagePath}`);
+      }
+    }
+
     // Delete PDF document from MongoDB
     await pdf.deleteOne();
 
@@ -136,7 +174,6 @@ exports.deleteTemplatePDF = async (req, res) => {
 
 // 📂 Get all PDFs from admin
 exports.getAdminTemplates = async (req, res) => {
-
   try {
     // Step 1: Find the first admin user
     const adminUser = await User.findOne({ role: "admin" });

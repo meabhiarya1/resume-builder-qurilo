@@ -12,8 +12,16 @@ const {
 } = require("../controllers/pdfController");
 
 const router = express.Router();
+router.post(
+  "/",
+  protect,
+  upload.fields([
+    { name: "pdf", maxCount: 1 }, // Handle a single PDF file
+    { name: "images", maxCount: 10 }, // Handle multiple images
+  ]),
+  savePDF
+);
 
-router.post("/", protect, upload.array("images"), savePDF); // Save a new PDF
 router.get("/", protect, getUserPDFs); // Get all PDFs for the logged-in user
 router.get("/:id", protect, getUserPDFsForAdmin); // Get all PDFs for the for admin of selected user
 router.get("/:id", protect, getSinglePDF); // Get a single PDF by ID
