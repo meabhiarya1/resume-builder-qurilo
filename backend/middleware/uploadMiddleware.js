@@ -3,9 +3,9 @@ const path = require("path");
 const fs = require("fs");
 
 // Ensure uploads directory exists
-const uploadDir = "uploads";
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+const uploadResDir = "uploads";
+if (!fs.existsSync(uploadResDir)) {
+  fs.mkdirSync(uploadResDir, { recursive: true });
 }
 
 const templateUploadDir = "Templates";
@@ -13,19 +13,41 @@ if (!fs.existsSync(templateUploadDir)) {
   fs.mkdirSync(templateUploadDir, { recursive: true });
 }
 
-// Storage Engine
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    if (!req.user) {
-      return cb(new Error("Unauthorized: No user found in request"), null);
-    }
+    try {
+      if (!req.user) {
+        return cb(new Error("Unauthorized: No user found in request"), null);
+      }
 
-    // Check user role to determine upload directory
-    const uploadDir = req.user.role === "admin" ? templateUploadDir : uploadDir;
-    cb(null, uploadDir);
+      if (!req.user.role) {
+        return cb(new Error("Unauthorized: User role not specified"), null);
+      }
+
+      // Determine upload directory based on user role
+      const uploadDir =
+        req.user.role === "admin" ? templateUploadDir : uploadResDir;
+
+      if (!uploadDir) {
+        return cb(new Error("Upload directory is undefined"), null);
+      }
+
+      cb(null, uploadDir);
+    } catch (err) {
+      cb(err, null);
+    }
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Generate unique filename
+    try {
+      if (!file || !file.originalname) {
+        return cb(new Error("Invalid file: File or filename missing"), null);
+      }
+
+      const uniqueFilename = `${Date.now()}${path.extname(file.originalname)}`;
+      cb(null, uniqueFilename);
+    } catch (err) {
+      cb(err, null);
+    }
   },
 });
 
