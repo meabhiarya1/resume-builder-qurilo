@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Tesseract from "tesseract.js";
-import JoditEditor from "jodit-react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Quill editor styles
 
 const PDFViewerModalStatic = ({
   setShowModalModalStatic,
@@ -17,7 +18,7 @@ const PDFViewerModalStatic = ({
   const [editorContent, setEditorContent] = useState([]);
 
   useEffect(() => {
-    setEditorContent(""); // Clear editor when new resume is selected
+    setEditorContent([]); // Clear editor when new resume is selected
     extractTextWithPositions();
   }, [selectedResume]);
 
@@ -27,13 +28,13 @@ const PDFViewerModalStatic = ({
 
   const nextPage = () => {
     if (currentPage < images.length - 1) {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage((prev) => prev + 1);
     }
   };
 
   const prevPage = () => {
     if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
+      setCurrentPage((prev) => prev - 1);
     }
   };
 
@@ -49,42 +50,37 @@ const PDFViewerModalStatic = ({
       "eng",
       {
         logger: (m) => console.log(m),
-        oem: 1, // LSTM OCR Engine
-        psm: 3, // Fully automatic page segmentation
+        oem: 1,
+        psm: 6,
       }
     )
       .then(({ data }) => {
-        console.log("Full OCR Response:", data);
-
         if (!data || !data.text) {
           setEditorContent([]);
           return;
         }
 
-        if (!data.words || data.words.length === 0) {
-          console.warn(
-            "Tesseract did not return word positioning data. Trying alternative extraction..."
-          );
-
-          // Convert text into a formatted structure if word positions are missing
-          const formattedText = data.text
-            .replace(/ /g, "&nbsp;") // Preserve spaces
-            .replace(/\n/g, "<br>"); // Preserve line breaks
-
-          setEditorContent([{ text: formattedText, x: 0, y: 0 }]); // Default position
+        if (!data.blocks || data.blocks.length === 0) {
+          setEditorContent([
+            {
+              text: data.text,
+              x: 0,
+              y: 0,
+              width: "100%",
+            },
+          ]);
           return;
         }
 
-        // Extract words with their positions
-        const extractedWords = data.words.map((word) => ({
-          text: word.text,
-          x: word.bbox.x0, // Left position
-          y: word.bbox.y0, // Top position
-          width: word.bbox.x1 - word.bbox.x0, // Word width
-          height: word.bbox.y1 - word.bbox.y0, // Word height
+        const extractedBlocks = data.blocks.map((block) => ({
+          text: block.text || "",
+          x: block.bbox.x0,
+          y: block.bbox.y0,
+          width: block.bbox.x1 - block.bbox.x0,
+          height: block.bbox.y1 - block.bbox.y0,
         }));
 
-        setEditorContent(extractedWords);
+        setEditorContent(extractedBlocks);
       })
       .catch((error) => {
         console.error("OCR Error:", error);
@@ -96,7 +92,6 @@ const PDFViewerModalStatic = ({
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70 z-50 w-full">
       <div className="relative bg-white p-6 rounded-lg shadow-2xl w-[80vw] max-h-[90vh] overflow-hidden flex flex-col">
-        {/* Top Section: PDF Viewer and Extracted Text */}
         <div className="flex-grow flex w-full overflow-hidden">
           {/* Left Side: Image Viewer */}
           <div className="w-1/2 p-2 flex flex-col">
@@ -138,29 +133,70 @@ const PDFViewerModalStatic = ({
             </div>
           </div>
 
-          {/* Right Side: Extracted Text Container */}
-          <div className="w-1/2 p-2 mt-[48px] flex flex-col overflow-auto bg-gray-100 border border-gray-300 rounded-lg relative">
-            <div className="relative ">
+          {/* Right Side: Extracted Text Container (React-Quill for Editing) */}
+          <div
+            className="w-1/2 p-2 flex flex-col overflow-auto bg-gray-100 border border-gray-300 rounded-lg relative mt-[50px]
+          "
+          >
+            <h3 className="font-semibold text-lg mb-2 w-full">
+              Extracted Text:
+            </h3>
+            <div className="relative w-full h-full">
               {editorContent.length > 0 ? (
-                editorContent.map((word, index) => (
+                editorContent.map((block, index) => (
                   <div
                     key={index}
-                    contentEditable={true}
-                    suppressContentEditableWarning={true}
-                    className="absolute bg-white/80 p-4 rounded-md w-full"
+                    className="absolute bg-white shadow-md p-3 rounded-lg w-full"
                     style={{
-                      left: `${word.x * 0.8}px`, // SCALING FACTOR
-                      top: `${word.y * 0.8}px`, // SCALING FACTOR
-                      fontSize: `${word.height * 0.8}px`, // SCALING TEXT SIZE
-                      minWidth: `${word.width}px`, // Preserve width
+                      left: `${block.x * 0.8}px`,
+                      top: `${block.y * 0.8}px`,
+                      width: `${block.width}px`,
+                      fontSize: `${block.height * 0.8}px`,
                     }}
-                    dangerouslySetInnerHTML={{ __html: word.text }}
-                    onInput={(e) => {
-                      const updatedWords = [...editorContent];
-                      updatedWords[index].text = e.target.innerHTML;
-                      setEditorContent(updatedWords);
-                    }}
-                  />
+                  >
+                    {/* React-Quill Editor */}
+                    <ReactQuill
+                      value={block.text}
+                      onChange={(content) => {
+                        const updatedBlocks = [...editorContent];
+                        updatedBlocks[index].text = content;
+                        setEditorContent(updatedBlocks);
+                      }}
+                      modules={{
+                        toolbar: [
+                          [{ header: [1, 2, 3, false] }],
+                          ["bold", "italic", "underline", "strike"],
+                          [{ list: "ordered" }, { list: "bullet" }],
+                          [{ indent: "-1" }, { indent: "+1" }], // Indentation Support
+                          [{ align: [] }],
+                          ["blockquote", "code-block"],
+                          [{ color: [] }, { background: [] }],
+                          ["clean"],
+                        ],
+                      }}
+                      formats={[
+                        "header",
+                        "bold",
+                        "italic",
+                        "underline",
+                        "strike",
+                        "blockquote",
+                        "list",
+                        "bullet",
+                        "indent",
+                        "align",
+                        "code-block",
+                        "color",
+                        "background",
+                      ]}
+                      theme="snow"
+                      style={{
+                        fontFamily: '"Courier New", monospace',
+                        whiteSpace: "pre-wrap",
+                        lineHeight: "1.6",
+                      }}
+                    />
+                  </div>
                 ))
               ) : (
                 <p className="text-gray-500 text-center">No text extracted</p>
