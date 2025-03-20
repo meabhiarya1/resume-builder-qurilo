@@ -17,7 +17,7 @@ const PDFViewerModalStatic = ({
   const images = selectedResume.images;
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [pageData, setPageData] = useState({}); // Stores extracted & edited content for each page
+  const [pageData, setPageData] = useState({}); // Store extracted data per page
 
   useEffect(() => {
     extractAllPagesData(); // Extract data for all pages at once
@@ -63,12 +63,12 @@ const PDFViewerModalStatic = ({
   };
 
   const handleTextChange = (content) => {
-    console.log(content)
-    console.log(currentPage)
-    // setPageData((prev) => ({
-    //   ...prev,
-    //   [currentPage]: content, // Update text for the current page
-    // }));
+    // setPageData((prev) => {
+    //   return {
+    //     ...prev,
+    //     [currentPage]: content, // Ensure the correct page's data is updated
+    //   };
+    // });
   };
 
   const handleDownloadPDF = async () => {
@@ -208,7 +208,7 @@ const PDFViewerModalStatic = ({
         {/* Bottom Navigation and Actions */}
         <div className="mt-2 w-full flex items-center justify-between px-6 bg-white p-4 rounded-lg shadow-md">
           <button
-            onClick={prevPage}
+            onClick={() => prevPage()}
             disabled={currentPage === 0}
             className={`px-4 py-2 text-white rounded-lg transition cursor-pointer ${
               currentPage === 0
@@ -240,7 +240,7 @@ const PDFViewerModalStatic = ({
           </button>
 
           <button
-            onClick={nextPage}
+            onClick={() => nextPage()}
             disabled={currentPage === images.length - 1}
             className={`px-4 py-2 text-white rounded-lg transition cursor-pointer ${
               currentPage === images.length - 1
