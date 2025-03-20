@@ -31,6 +31,7 @@ const AdminDashboard = () => {
   const [pdfFile, setPdfFile] = useState(null);
   const [pdfFileName, setPdfFileName] = useState(null);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [pdf, setPdf] = useState(null);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -172,18 +173,24 @@ const AdminDashboard = () => {
 
   const handleTemplateUpload = (e) => {
     const file = e.target.files[0];
+
     if (!file) return;
-    setPdfFileName(file.name);
-    if (file && file.type === "application/pdf") {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPdfFile(e.target.result); // Ensure the file is in base64 format
-        setShowTemplateModal(true);
-      };
-      reader.readAsDataURL(file); // Read file as Base64
-    } else {
+
+    if (file.type !== "application/pdf") {
       alert("Please upload a valid PDF file.");
+      return;
     }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setPdfFile(e.target.result);
+      setShowModal(true);
+    };
+    reader.readAsDataURL(file); // Read file as Base64
+
+    setPdfFileName(file.name);
+    setPdf(file); // Store file directly instead of Base64
+    setShowTemplateModal(true);
   };
 
   const handleSave = async () => {
@@ -191,8 +198,15 @@ const AdminDashboard = () => {
     const token = localStorage.getItem("token");
 
     try {
+      if (!pdf) {
+        alert("No PDF file selected!");
+        setSaving(false);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("pdfName", pdfFileName);
+      formData.append("pdf", pdf); // Ensure the PDF file is appended
 
       // Convert base64 images to Blob and append them
       images.forEach((image, index) => {
@@ -202,6 +216,11 @@ const AdminDashboard = () => {
           `page-${index + 1}.png`
         );
       });
+
+      // Debugging: Log FormData to verify PDF is being sent
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+      }
 
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/pdfs`,
@@ -213,6 +232,7 @@ const AdminDashboard = () => {
           },
         }
       );
+
       setTemplatePdfsInfo((prevPdfs) => [...prevPdfs, response.data.pdf]);
       alert("PDF saved successfully!");
     } catch (error) {
@@ -223,7 +243,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Convert Base64 to Blob
   const dataURItoBlob = (dataURI) => {
     const byteString = atob(dataURI.split(",")[1]);
     const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
@@ -257,7 +276,7 @@ const AdminDashboard = () => {
               handleDeleteResumeTemplate={handleDeleteResumeTemplate}
             />
           )}
-          
+
           {activeTab === "uploads" && (
             <Upload
               handleSave={handleSave}

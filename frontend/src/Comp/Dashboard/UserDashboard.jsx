@@ -34,21 +34,6 @@ const UserDashboard = () => {
   };
 
   // // Handle File Upload
-  // const handleFileUpload = (event) => {
-  //   const file = event.target.files[0];
-  //   setPdfFileName(file.name);
-  //   if (file && file.type === "application/pdf") {
-  //     const reader = new FileReader();
-  //     reader.onload = (e) => {
-  //       setPdfFile(e.target.result); // Ensure the file is in base64 format
-  //       setShowModal(true);
-  //     };
-  //     reader.readAsDataURL(file); // Read file as Base64
-  //   } else {
-  //     alert("Please upload a valid PDF file.");
-  //   }
-  // };
-
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
 
