@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Tesseract from "tesseract.js";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Quill editor styles
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const PDFViewerModalStatic = ({
   setShowModalModalStatic,
@@ -15,16 +17,38 @@ const PDFViewerModalStatic = ({
   const images = selectedResume.images;
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [editorContent, setEditorContent] = useState([]);
+  const [pageData, setPageData] = useState({}); // Stores extracted & edited content for each page
 
   useEffect(() => {
-    setEditorContent([]); // Clear editor when new resume is selected
-    extractTextWithPositions();
+    extractAllPagesData(); // Extract data for all pages at once
   }, [selectedResume]);
 
-  useEffect(() => {
-    extractTextWithPositions();
-  }, [currentPage]);
+  const extractAllPagesData = async () => {
+    setLoading(true);
+    let extractedData = {};
+
+    for (let i = 0; i < images.length; i++) {
+      const imagePath = `${import.meta.env.VITE_BASE_URL}/${images[
+        i
+      ].path.replace(/\\/g, "/")}`;
+
+      try {
+        const { data } = await Tesseract.recognize(imagePath, "eng", {
+          logger: (m) => console.log(m),
+          oem: 1,
+          psm: 6,
+        });
+
+        extractedData[i] = data.text || "No text found"; // Store extracted text in state
+      } catch (error) {
+        console.error(`OCR Error on page ${i}:`, error);
+        extractedData[i] = "Error extracting text";
+      }
+    }
+
+    setPageData(extractedData); // Save all extracted data in state
+    setLoading(false);
+  };
 
   const nextPage = () => {
     if (currentPage < images.length - 1) {
@@ -38,55 +62,49 @@ const PDFViewerModalStatic = ({
     }
   };
 
-  const extractTextWithPositions = () => {
-    if (!images[currentPage]) return;
-    setLoading(true);
+  const handleTextChange = (content) => {
+    console.log(content)
+    console.log(currentPage)
+    // setPageData((prev) => ({
+    //   ...prev,
+    //   [currentPage]: content, // Update text for the current page
+    // }));
+  };
 
-    Tesseract.recognize(
-      `${import.meta.env.VITE_BASE_URL}/${images[currentPage].path.replace(
-        /\\/g,
-        "/"
-      )}`,
-      "eng",
-      {
-        logger: (m) => console.log(m),
-        oem: 1,
-        psm: 6,
+  const handleDownloadPDF = async () => {
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = 210;
+    const pdfHeight = 297;
+    const margin = 10;
+
+    for (let i = 0; i < images.length; i++) {
+      let imgData;
+      const pageElement = document.getElementById(`resume-page-${i}`);
+
+      if (pageElement) {
+        try {
+          const canvas = await html2canvas(pageElement, { scale: 2 });
+          imgData = canvas.toDataURL("image/png");
+        } catch (error) {
+          console.error("Error capturing canvas:", error);
+          continue;
+        }
       }
-    )
-      .then(({ data }) => {
-        if (!data || !data.text) {
-          setEditorContent([]);
-          return;
-        }
 
-        if (!data.blocks || data.blocks.length === 0) {
-          setEditorContent([
-            {
-              text: data.text,
-              x: 0,
-              y: 0,
-              width: "100%",
-            },
-          ]);
-          return;
-        }
+      if (imgData) {
+        if (i > 0) pdf.addPage();
+        pdf.addImage(
+          imgData,
+          "PNG",
+          margin,
+          margin,
+          pdfWidth - 2 * margin,
+          pdfHeight - 2 * margin
+        );
+      }
+    }
 
-        const extractedBlocks = data.blocks.map((block) => ({
-          text: block.text || "",
-          x: block.bbox.x0,
-          y: block.bbox.y0,
-          width: block.bbox.x1 - block.bbox.x0,
-          height: block.bbox.y1 - block.bbox.y0,
-        }));
-
-        setEditorContent(extractedBlocks);
-      })
-      .catch((error) => {
-        console.error("OCR Error:", error);
-        setEditorContent([]);
-      })
-      .finally(() => setLoading(false));
+    pdf.save(`${selectedResume?.pdfName || "Edited_Resume"}.pdf`);
   };
 
   return (
@@ -133,74 +151,56 @@ const PDFViewerModalStatic = ({
             </div>
           </div>
 
-          {/* Right Side: Extracted Text Container (React-Quill for Editing) */}
-          <div
-            className="w-1/2 p-2 flex flex-col overflow-auto bg-gray-100 border border-gray-300 rounded-lg relative mt-[50px]
-          "
-          >
+          {/* Right Side: Extracted Text Container */}
+          <div className="w-1/2 p-2 flex flex-col overflow-auto bg-gray-100 border border-gray-300 rounded-lg relative mt-[50px]">
             <h3 className="font-semibold text-lg mb-2 w-full">
               Extracted Text:
             </h3>
             <div className="relative w-full h-full">
-              {editorContent.length > 0 ? (
-                editorContent.map((block, index) => (
-                  <div
-                    key={index}
-                    className="absolute bg-white shadow-md p-3 rounded-lg w-full"
-                    style={{
-                      left: `${block.x * 0.8}px`,
-                      top: `${block.y * 0.8}px`,
-                      width: `${block.width}px`,
-                      fontSize: `${block.height * 0.8}px`,
-                    }}
-                  >
-                    {/* React-Quill Editor */}
-                    <ReactQuill
-                      value={block.text}
-                      onChange={(content) => {
-                        const updatedBlocks = [...editorContent];
-                        updatedBlocks[index].text = content;
-                        setEditorContent(updatedBlocks);
-                      }}
-                      modules={{
-                        toolbar: [
-                          [{ header: [1, 2, 3, false] }],
-                          ["bold", "italic", "underline", "strike"],
-                          [{ list: "ordered" }, { list: "bullet" }],
-                          [{ indent: "-1" }, { indent: "+1" }], // Indentation Support
-                          [{ align: [] }],
-                          ["blockquote", "code-block"],
-                          [{ color: [] }, { background: [] }],
-                          ["clean"],
-                        ],
-                      }}
-                      formats={[
-                        "header",
-                        "bold",
-                        "italic",
-                        "underline",
-                        "strike",
-                        "blockquote",
-                        "list",
-                        "bullet",
-                        "indent",
-                        "align",
-                        "code-block",
-                        "color",
-                        "background",
-                      ]}
-                      theme="snow"
-                      style={{
-                        fontFamily: '"Courier New", monospace',
-                        whiteSpace: "pre-wrap",
-                        lineHeight: "1.6",
-                      }}
-                    />
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500 text-center">No text extracted</p>
-              )}
+              <div
+                id={`resume-page-${currentPage}`}
+                className="absolute bg-white shadow-md p-3 rounded-lg w-full"
+              >
+                {console.log(pageData[currentPage])}
+                {/* React-Quill Editor */}
+                <ReactQuill
+                  value={pageData[currentPage] || ""}
+                  onChange={handleTextChange}
+                  modules={{
+                    toolbar: [
+                      [{ header: [1, 2, 3, false] }],
+                      ["bold", "italic", "underline", "strike"],
+                      [{ list: "ordered" }, { list: "bullet" }],
+                      [{ indent: "-1" }, { indent: "+1" }],
+                      [{ align: [] }],
+                      ["blockquote", "code-block"],
+                      [{ color: [] }, { background: [] }],
+                      ["clean"],
+                    ],
+                  }}
+                  formats={[
+                    "header",
+                    "bold",
+                    "italic",
+                    "underline",
+                    "strike",
+                    "blockquote",
+                    "list",
+                    "bullet",
+                    "indent",
+                    "align",
+                    "code-block",
+                    "color",
+                    "background",
+                  ]}
+                  theme="snow"
+                  style={{
+                    fontFamily: '"Courier New", monospace',
+                    whiteSpace: "pre-wrap",
+                    lineHeight: "1.6",
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -231,6 +231,13 @@ const PDFViewerModalStatic = ({
               🗑️ Delete Resume
             </button>
           )}
+
+          <button
+            onClick={handleDownloadPDF}
+            className="px-6 py-3 text-white font-semibold rounded-lg transition duration-300 shadow-md flex items-center gap-2 cursor-pointer bg-green-600 hover:bg-green-800 transform hover:scale-105"
+          >
+            📄 Download PDF
+          </button>
 
           <button
             onClick={nextPage}
