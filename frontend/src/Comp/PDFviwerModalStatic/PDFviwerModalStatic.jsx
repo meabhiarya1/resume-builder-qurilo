@@ -15,24 +15,25 @@ const PDFViewerModalStatic = ({
   handleDeleteResume,
   selectedResumeType,
 }) => {
-  if (!selectedResume || !selectedResume.images) return null;
+  if (!selectedResume || !selectedResume?.images) return null;
   let contentSet = "";
-  const images = selectedResume.images;
+  const images = selectedResume?.images;
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [pdfLoaded, setPdfLoaded] = useState(false); // Ensure first page is loaded properly
   const [content, setContent] = useState("");
   const editorRef = useRef(null);
 
   useEffect(() => {
     const loadPdf = async () => {
       if (!selectedResume || !selectedResume.pdfName) return;
-
+      setLoading(true);
       const pdfUrl = `${import.meta.env.VITE_BASE_URL}/pdf/${
         selectedResume.pdfName
       }`;
-      setPdfLoaded(pdfUrl);
-      console.log(pdfUrl);
+
+      if (!pdfUrl) return;
+
+      setLoading(false);
 
       try {
         const response = await fetch(pdfUrl);
@@ -140,6 +141,7 @@ const PDFViewerModalStatic = ({
                   </p>
                 </div>
               )}
+
               {images.length > 0 ? (
                 <div className="w-full flex justify-center items-center  ">
                   <img
@@ -250,7 +252,6 @@ const PDFViewerModalStatic = ({
           </button>
         </div>
       </div>
-      {/* {isUpdating && <p className="text-center text-gray-600">Saving...</p>} */}
     </div>
   );
 };
