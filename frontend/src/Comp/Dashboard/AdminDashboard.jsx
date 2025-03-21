@@ -90,7 +90,6 @@ const AdminDashboard = () => {
   };
 
   const handleViewResume = (pdf) => {
-    console.log(pdf);
     setSelectedResume(pdf);
     setShowModalModalStatic(true);
   };
@@ -163,15 +162,16 @@ const AdminDashboard = () => {
   };
 
   const handleTemplateUpload = (e) => {
+    console.log("file")
     const file = e.target.files[0];
-
-    if (!file) return;
-
+    if (!file) {
+      alert("Please upload a valid PDF file.");
+      return;
+    }
     if (file.type !== "application/pdf") {
       alert("Please upload a valid PDF file.");
       return;
     }
-
     const reader = new FileReader();
     reader.onload = (e) => {
       setPdfFile(e.target.result);

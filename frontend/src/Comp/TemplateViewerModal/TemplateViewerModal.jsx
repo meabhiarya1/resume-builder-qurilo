@@ -34,6 +34,8 @@ const TemplateViewerModal = ({
     }
   };
 
+  // console.log(images)
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
       <div className="relative bg-white rounded-lg shadow-lg w-[80%] max-w-4xl p-6">

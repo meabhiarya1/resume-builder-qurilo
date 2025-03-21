@@ -181,7 +181,7 @@ const UserDashboard = () => {
         setPdfsInfo([]);
         return
       }
-      console.log("Templates Data:", response?.data);
+      // console.log("Templates Data:", response?.data);
       setTemplates(response?.data?.templates);
     } catch (error) {
       console.error("Error fetching templates:", error);

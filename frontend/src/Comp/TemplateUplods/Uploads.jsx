@@ -9,7 +9,7 @@ const Uploads = ({
   handleTemplateUpload,
   showTemplateModal,
   images,
-  setImages,
+  setImages
 }) => {
 
   return (
