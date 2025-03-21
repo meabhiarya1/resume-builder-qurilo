@@ -75,24 +75,21 @@ const PDFViewerModalStatic = ({
 
   const handleDownloadPDF = async () => {
     setLoading(true);
-    if (contentSet === "") {
-      contentSet = content;
-    }
     const element = document.createElement("div");
-    element.innerHTML = contentSet;
-    element.style.width = "210mm"; // Ensures A4 width for proper scaling
-    element.style.padding = "5mm"; // Adds padding for better spacing
+    element.innerHTML = content; 
+    element.style.width = "210mm";
+    element.style.padding = "5mm";
 
     const options = {
       margin: 10,
       filename: `${selectedResume?.pdfName || "Edited_Resume"}.pdf`,
-      image: { type: "jpeg", quality: 1 }, // Maximum image quality
+      image: { type: "jpeg", quality: 1 },
       html2canvas: {
-        scale: 3, // Higher scale improves resolution
+        scale: 3,
         useCORS: true,
         allowTaint: true,
         logging: false,
-        scrollY: 0, // Prevents scrolling issues when capturing the content
+        scrollY: 0,
       },
       jsPDF: {
         unit: "mm",
@@ -100,7 +97,7 @@ const PDFViewerModalStatic = ({
         orientation: "portrait",
         precision: 16,
       },
-      pagebreak: { mode: ["css", "avoid-all", "legacy"] }, // Ensures proper page breaks
+      pagebreak: { mode: ["css", "avoid-all", "legacy"] },
     };
 
     document.body.appendChild(element);
@@ -110,7 +107,7 @@ const PDFViewerModalStatic = ({
   };
 
   const handleContentChange = (newContent) => {
-    contentSet = newContent;
+    setContent(newContent);
   };
 
   return (
