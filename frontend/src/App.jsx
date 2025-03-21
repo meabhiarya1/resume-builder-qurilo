@@ -30,7 +30,6 @@ function RoutesComponent() {
           user?.role === "admin" ? <AdminDashboard /> : <UserDashboard />
         }
       />
-
       <Route path="*" element={<Notfound />} />
     </Routes>
   );

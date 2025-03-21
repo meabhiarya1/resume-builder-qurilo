@@ -22,7 +22,7 @@ const AuthProvider = ({ children }) => {
       );
       localStorage.setItem("token", res.data.token);
       setUser(res.data.user);
-      navigate("/"); // Redirect to home after login
+      navigate("/"); 
     } catch (error) {
       console.error("Login failed", error);
     } finally {
@@ -33,13 +33,11 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
-    navigate("/"); // Redirect to login page
+    navigate("/"); 
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
-    // Allow access to public pages ("/" and "/register")
     if (!token) {
       if (location.pathname !== "/" && location.pathname !== "/register") {
         navigate("/");
@@ -56,16 +54,16 @@ const AuthProvider = ({ children }) => {
       .then((res) => {
         setUser(res?.data);
         if (location.pathname === "/" || location.pathname === "/register") {
-          navigate("/dashboard"); // Redirect only from login page
+          navigate("/dashboard"); 
         }
       })
       .catch((err) => {
         if (err.response?.status === 401) {
-          logout(); // Handle token expiration
+          logout(); 
         }
       })
       .finally(() => setLoading(false));
-  }, [location.pathname]); // Re-run when route changes
+  }, [location.pathname]);
 
   return (
     <AuthContext.Provider value={{ user, loading, logout, login }}>

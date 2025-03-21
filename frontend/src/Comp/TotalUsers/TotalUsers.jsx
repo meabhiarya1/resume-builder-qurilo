@@ -9,7 +9,7 @@ const TotalUsers = ({ loading, users, error, handleUserPdfs }) => {
       <h2 className="text-2xl font-bold mb-4 text-center"> Users</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {users
-          ?.filter((user) => user.role !== "admin") // Exclude admin users
+          ?.filter((user) => user.role !== "admin") 
           .map((user) => (
             <div
               key={user._id}
