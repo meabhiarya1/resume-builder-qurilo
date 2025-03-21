@@ -68,7 +68,7 @@ const UserResumePDFViewerModalStatic = ({
                 : "bg-blue-500 hover:bg-blue-700"
             }`}
           >
-            ◀ Previous
+            Previous
           </button>
 
           <p className="text-gray-700 font-semibold">
@@ -84,7 +84,7 @@ const UserResumePDFViewerModalStatic = ({
                 : "bg-blue-500 hover:bg-blue-700"
             }`}
           >
-            Next ▶
+            Next
           </button>
         </div>
       </div>
