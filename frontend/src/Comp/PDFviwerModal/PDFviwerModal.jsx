@@ -34,15 +34,17 @@ const PDFViewerModal = ({
     }
   };
 
+  const handleCrossButton = () => {
+    setShowModal(false);
+    setImages([]);
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
       <div className="relative bg-white rounded-lg shadow-lg w-[80%] max-w-4xl p-6">
         {/* Close Button */}
         <button
-          onClick={() => {
-            setImages([]);
-            setShowModal(false);
-          }}
+          onClick={handleCrossButton}
           className="absolute top-3 right-4 text-gray-500 hover:text-gray-800 transition text-lg cursor-pointer"
         >
           ✖

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../Navbar/Navbar";
 import PDFViewerModal from "../PDFviwerModal/PDFviwerModal";
 import * as pdfjs from "pdfjs-dist";
-import "pdfjs-dist/build/pdf.worker.entry"; // ✅ Ensure the worker is loaded
+import "pdfjs-dist/build/pdf.worker.entry";
 import UserTotalResume from "../UserTotalResume/UserTotalResume";
 import PDFViewerModalStatic from "../PDFviwerModalStatic/PDFviwerModalStatic";
 import axios from "axios";
@@ -35,14 +35,11 @@ const UserDashboard = () => {
   // Handle File Upload
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-
     if (!file) return;
-
     if (file.type !== "application/pdf") {
       alert("Please upload a valid PDF file.");
       return;
     }
-
     const reader = new FileReader();
     reader.onload = (e) => {
       setPdfFile(e.target.result);
@@ -60,26 +57,18 @@ const UserDashboard = () => {
     try {
       const pdf = await pdfjs.getDocument(pdfFile).promise;
       const pagesArray = [];
-
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
         const scale = 2;
         const viewport = page.getViewport({ scale });
-
-        // Create a canvas to render the page
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
         canvas.width = viewport.width;
         canvas.height = viewport.height;
-
-        // Render page onto canvas
         await page.render({ canvasContext: context, viewport }).promise;
-
-        // Convert canvas to image URL
         const imageData = canvas.toDataURL("image/png");
         pagesArray.push(imageData);
       }
-
       setImages(pagesArray);
     } catch (error) {
       console.error("Error extracting PDF pages:", error);
@@ -91,12 +80,10 @@ const UserDashboard = () => {
       alert("Invalid PDF ID!");
       return;
     }
-
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this resume?"
     );
     if (!confirmDelete) return;
-
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/api/pdfs/${id}`,
@@ -130,7 +117,6 @@ const UserDashboard = () => {
         setSaving(false);
         return;
       }
-
       const formData = new FormData();
       formData.append("pdfName", pdfFileName);
       formData.append("pdf", pdf);
@@ -153,6 +139,10 @@ const UserDashboard = () => {
           },
         }
       );
+      if (response.status === 401) {
+        setPdfsInfo([]);
+        return
+      }
 
       setPdfsInfo((prevPdfs) => [...prevPdfs, response?.data?.pdf]);
       setShowModal(false);
@@ -171,11 +161,9 @@ const UserDashboard = () => {
     const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
     const arrayBuffer = new ArrayBuffer(byteString.length);
     const intArray = new Uint8Array(arrayBuffer);
-
     for (let i = 0; i < byteString.length; i++) {
       intArray[i] = byteString.charCodeAt(i);
     }
-
     return new Blob([arrayBuffer], { type: mimeString });
   };
 
@@ -189,6 +177,10 @@ const UserDashboard = () => {
           },
         }
       );
+      if (response.status === 401) {
+        setPdfsInfo([]);
+        return
+      }
       console.log("Templates Data:", response?.data);
       setTemplates(response?.data?.templates);
     } catch (error) {
@@ -213,6 +205,10 @@ const UserDashboard = () => {
             },
           }
         );
+        if (response.status === 401) {
+          setPdfsInfo([]);
+          return
+        }
         const data = await response?.json();
         setPdfsInfo(data);
       } catch (error) {
@@ -243,8 +239,8 @@ const UserDashboard = () => {
         />
       )}
 
-      <div className="flex   max-md:flex-col-reverse max-lg:gap-6">
-        <div className="min-md:overflow-x-scroll h-[calc(100vh-90px)] w-[100vw] min-2xl:w-[75vw] min-xl:[60vw] ">
+      <div className="flex max-md:flex-col-reverse max-lg:gap-6">
+        <div className="min-md:overflow-x-scroll h-[calc(100vh-90px)] w-[100vw] min-2xl:w-[75vw] min-xl:[60vw]">
           <UserTotalResume
             pdfsInfo={pdfsInfo}
             handleViewResume={handleViewResume}
@@ -275,7 +271,7 @@ const UserDashboard = () => {
                     type="file"
                     className=" inset-0 z-50 h-full w-full cursor-pointer opacity-0"
                     accept="application/pdf"
-                    onChange={handleFileUpload} // Handle file selection
+                    onChange={handleFileUpload}
                   />
                   <div className="space-y-6 text-center">
                     <p className="text-base font-medium text-white">

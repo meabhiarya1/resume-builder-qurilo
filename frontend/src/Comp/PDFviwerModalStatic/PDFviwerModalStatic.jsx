@@ -1,9 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Tesseract from "tesseract.js";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css"; // Quill editor styles
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import * as pdfjsLib from "pdfjs-dist";
 import JoditEditor from "jodit-react";
 import html2pdf from "html2pdf.js";
@@ -86,7 +81,7 @@ const PDFViewerModalStatic = ({
     const element = document.createElement("div");
     element.innerHTML = contentSet;
     element.style.width = "210mm"; // Ensures A4 width for proper scaling
-    element.style.padding = "10mm"; // Adds padding for better spacing
+    element.style.padding = "5mm"; // Adds padding for better spacing
 
     const options = {
       margin: 10,
@@ -210,7 +205,6 @@ const PDFViewerModalStatic = ({
 
         {/* Bottom Navigation and Actions */}
         <div className="gap-6 min-w-[35vw] self-end mt-4 mr-2 p-2 rounded-lg shadow-md border border-gray-300 flex flex-wrap items-center justify-between sm:justify-center">
-          {/* Prev Arrow */}
           <ArrowBigLeft
             size={25}
             onClick={() => prevPage()}
@@ -218,12 +212,10 @@ const PDFViewerModalStatic = ({
             className="text-blue-600 hover:text-blue-800 cursor-pointer"
           />
 
-          {/* Page Info */}
           <p className="text-gray-700 font-semibold text-xs sm:text-sm whitespace-nowrap">
             Page {currentPage + 1} of {images.length}
           </p>
 
-          {/* Delete Icon */}
           {selectedResumeType === "Resumes" && (
             <Trash2
               size={18}
@@ -232,7 +224,6 @@ const PDFViewerModalStatic = ({
             />
           )}
 
-          {/* Download Button */}
           <button
             onClick={handleDownloadPDF}
             className="text-xs sm:text-sm px-3 py-1 sm:px-4 sm:py-2 text-white font-semibold rounded-lg transition duration-300 shadow-md flex items-center gap-1 sm:gap-2 cursor-pointer bg-green-600 hover:bg-green-800 transform hover:scale-105"
@@ -241,7 +232,6 @@ const PDFViewerModalStatic = ({
             {loading ? "Downloading..." : "PDF"}
           </button>
 
-          {/* Next Arrow */}
           <ArrowBigRight
             size={25}
             onClick={() => nextPage()}
