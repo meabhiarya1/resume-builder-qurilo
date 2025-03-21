@@ -121,9 +121,9 @@ const PDFViewerModalStatic = ({
   return (
     <div className="fixed inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70 z-50 w-full">
       <div className="relative bg-white p-6 rounded-lg shadow-2xl w-[80vw] max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="flex-grow flex w-full overflow-hidden">
+        <div className="flex-grow flex flex-col md:flex-row w-full overflow-y-auto ">
           {/* Left Side: Image Viewer */}
-          <div className="w-1/2 p-2 flex flex-col">
+          <div className="w-full md:w-1/2 p-2 flex flex-col">
             <button
               onClick={() => {
                 setShowModalModalStatic(false);
@@ -164,17 +164,15 @@ const PDFViewerModalStatic = ({
           </div>
 
           {/* Right Side: Extracted Text Container */}
-          <div className="w-1/2 p-2 flex flex-col overflow-auto bg-gray-100 border border-gray-300 rounded-lg relative mt-[50px]">
+          <div className="w-full md:w-1/2 p-2 flex flex-col bg-gray-100 border border-gray-300 rounded-lg mt-4 md:mt-[50px] max-h-[calc(90vh-100px)] ">
             <h3 className="font-semibold text-lg mb-2 w-full">
               Extracted Text:
             </h3>
             <div className="relative w-full h-full">
               <div
                 id={`resume-page-${currentPage}`}
-                className="absolute bg-white shadow-md p-3 rounded-lg w-full"
+                className="bg-white shadow-md p-3 rounded-lg w-full"
               >
-                {/* ReactQuill Editor with useRef */}
-
                 <JoditEditor
                   ref={editorRef}
                   value={content || ""}
