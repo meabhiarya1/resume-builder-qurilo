@@ -107,9 +107,9 @@ const UserDashboard = () => {
         }
       );
 
-      if (response.status === 200) {
+      if (response?.status === 200) {
         alert("Resume deleted successfully!");
-        setPdfsInfo((prevPdfs) => prevPdfs.filter((pdf) => pdf._id !== id));
+        setPdfsInfo((prevPdfs) => prevPdfs?.filter((pdf) => pdf?._id !== id));
       } else {
         console.log("Failed to delete resume. Please try again.");
       }
@@ -154,7 +154,7 @@ const UserDashboard = () => {
         }
       );
 
-      setPdfsInfo((prevPdfs) => [...prevPdfs, response.data.pdf]);
+      setPdfsInfo((prevPdfs) => [...prevPdfs, response?.data?.pdf]);
       setShowModal(false);
       setImages([]);
       alert("PDF saved successfully!");
@@ -189,8 +189,8 @@ const UserDashboard = () => {
           },
         }
       );
-      console.log("Templates Data:", response.data);
-      setTemplates(response.data.templates);
+      console.log("Templates Data:", response?.data);
+      setTemplates(response?.data?.templates);
     } catch (error) {
       console.error("Error fetching templates:", error);
     }
@@ -213,7 +213,7 @@ const UserDashboard = () => {
             },
           }
         );
-        const data = await response.json();
+        const data = await response?.json();
         setPdfsInfo(data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -227,11 +227,10 @@ const UserDashboard = () => {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col ">
+    <div className="h-screen flex flex-col">
       {/* Navbar */}
       <Navbar />
 
-      {/* Show Modal when a PDF is uploaded */}
       {showModal && (
         <PDFViewerModal
           setShowModal={setShowModal}
@@ -244,25 +243,27 @@ const UserDashboard = () => {
         />
       )}
 
-      <div className="flex  flex-grow ">
-        <UserTotalResume
-          pdfsInfo={pdfsInfo}
-          handleViewResume={handleViewResume}
-          selectedResume={selectedResume}
-          setSelectedResumeType={setSelectedResumeType}
-        />
+      <div className="flex   max-md:flex-col-reverse max-lg:gap-6">
+        <div className="min-md:overflow-x-scroll h-[calc(100vh-90px)] w-[100vw] min-2xl:w-[75vw] min-xl:[60vw] ">
+          <UserTotalResume
+            pdfsInfo={pdfsInfo}
+            handleViewResume={handleViewResume}
+            selectedResume={selectedResume}
+            setSelectedResumeType={setSelectedResumeType}
+          />
 
-        <UserTotalTemplate
-          templates={templates}
-          handleViewResume={handleViewResume}
-          setSelectedResumeType={setSelectedResumeType}
-        />
+          <UserTotalTemplate
+            templates={templates}
+            handleViewResume={handleViewResume}
+            setSelectedResumeType={setSelectedResumeType}
+          />
+        </div>
 
         {/* Upload Section */}
-        <div className="flex flex-grow items-center justify-center ">
-          <div className="group relative w-[420px]">
-            <div className="relative overflow-hidden rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
-              <div className="relative p-6">
+        <div className="flex items-center w-[100vw]  min-2xl:w-[25vw] min-xl:[40vw] mt-[70px] px-6 justify-center h-[calc(100vh-250px)] max-md:h-[200px] max-lg:mb-12">
+        
+             <div className="w-[100%] overflow-hidden rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
+              <div className=" p-6 ">
                 <h3 className="text-lg font-semibold text-white">
                   Upload Files
                 </h3>
@@ -271,11 +272,11 @@ const UserDashboard = () => {
                 </p>
 
                 {/* File Upload Input */}
-                <div className="group/dropzone mt-6">
-                  <div className="relative rounded-xl border-2 border-dashed border-slate-700 bg-slate-900/50 p-8 transition-colors group-hover/dropzone:border-cyan-500/50">
+                <div className=" mt-6">
+                  <div className=" h-[calc(100vh-250px)] max-md:h-[200px]  rounded-xl border-2 border-dashed border-slate-700 bg-slate-900/50 p-8 transition-colors group-hover/dropzone:border-cyan-500/50 flex flex-col justify-center">
                     <input
                       type="file"
-                      className="absolute inset-0 z-50 h-full w-full cursor-pointer opacity-0"
+                      className=" inset-0 z-50 h-full w-full cursor-pointer opacity-0"
                       accept="application/pdf"
                       onChange={handleFileUpload} // Handle file selection
                     />
@@ -293,8 +294,8 @@ const UserDashboard = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </div> 
+         
         </div>
 
         {showModalModalStatic && selectedResume && (
