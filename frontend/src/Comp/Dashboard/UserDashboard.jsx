@@ -261,41 +261,35 @@ const UserDashboard = () => {
 
         {/* Upload Section */}
         <div className="flex items-center w-[100vw]  min-2xl:w-[25vw] min-xl:[40vw] mt-[70px] px-6 justify-center h-[calc(100vh-250px)] max-md:h-[200px] max-lg:mb-12">
-        
-             <div className="w-[100%] overflow-hidden rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
-              <div className=" p-6 ">
-                <h3 className="text-lg font-semibold text-white">
-                  Upload Files
-                </h3>
-                <p className="text-sm text-slate-400">
-                  Drag & drop your files here
-                </p>
+          <div className="w-[100%] overflow-hidden rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
+            <div className=" p-6 ">
+              <h3 className="text-lg font-semibold text-white">Upload Files</h3>
+              <p className="text-sm text-slate-400">
+                Drag & drop your files here
+              </p>
 
-                {/* File Upload Input */}
-                <div className=" mt-6">
-                  <div className=" h-[calc(100vh-250px)] max-md:h-[200px]  rounded-xl border-2 border-dashed border-slate-700 bg-slate-900/50 p-8 transition-colors group-hover/dropzone:border-cyan-500/50 flex flex-col justify-center">
-                    <input
-                      type="file"
-                      className=" inset-0 z-50 h-full w-full cursor-pointer opacity-0"
-                      accept="application/pdf"
-                      onChange={handleFileUpload} // Handle file selection
-                    />
-                    <div className="space-y-6 text-center">
-                      <p className="text-base font-medium text-white">
-                        Drop your files here or browse
-                      </p>
-                      <p className="text-sm text-slate-400">
-                        Support files: PDF
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        Max file size: 10MB
-                      </p>
-                    </div>
+              {/* File Upload Input */}
+              <div className=" mt-6">
+                <div className=" h-[calc(100vh-250px)] max-md:h-[200px]  rounded-xl border-2 border-dashed border-slate-700 bg-slate-900/50 p-8 transition-colors group-hover/dropzone:border-cyan-500/50 flex flex-col justify-center">
+                  <input
+                    type="file"
+                    className=" inset-0 z-50 h-full w-full cursor-pointer opacity-0"
+                    accept="application/pdf"
+                    onChange={handleFileUpload} // Handle file selection
+                  />
+                  <div className="space-y-6 text-center">
+                    <p className="text-base font-medium text-white">
+                      Drop your files here or browse
+                    </p>
+                    <p className="text-sm text-slate-400">Support files: PDF</p>
+                    <p className="text-xs text-slate-400">
+                      Max file size: 10MB
+                    </p>
                   </div>
                 </div>
               </div>
-            </div> 
-         
+            </div>
+          </div>
         </div>
 
         {showModalModalStatic && selectedResume && (

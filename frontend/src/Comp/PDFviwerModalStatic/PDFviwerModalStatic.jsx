@@ -7,6 +7,7 @@ import jsPDF from "jspdf";
 import * as pdfjsLib from "pdfjs-dist";
 import JoditEditor from "jodit-react";
 import html2pdf from "html2pdf.js";
+import { ArrowBigLeft, ArrowBigRight, Download, Trash2 } from "lucide-react";
 
 const PDFViewerModalStatic = ({
   setShowModalModalStatic,
@@ -56,7 +57,6 @@ const PDFViewerModalStatic = ({
           });
         }
         contentSet = htmlContent;
-        console.log(htmlContent);
         setContent(htmlContent);
       } catch (error) {
         console.error("Error loading PDF:", error);
@@ -79,6 +79,10 @@ const PDFViewerModalStatic = ({
   };
 
   const handleDownloadPDF = async () => {
+    setLoading(true);
+    if (contentSet === "") {
+      contentSet = content;
+    }
     const element = document.createElement("div");
     element.innerHTML = contentSet;
     element.style.width = "210mm"; // Ensures A4 width for proper scaling
@@ -107,6 +111,7 @@ const PDFViewerModalStatic = ({
     document.body.appendChild(element);
     await html2pdf().from(element).set(options).save();
     document.body.removeChild(element);
+    setLoading(false);
   };
 
   const handleContentChange = (newContent) => {
@@ -206,50 +211,45 @@ const PDFViewerModalStatic = ({
         </div>
 
         {/* Bottom Navigation and Actions */}
-        <div className="mt-2 w-full flex items-center justify-between px-6 bg-white p-4 rounded-lg shadow-md">
-          <button
+        <div className="gap-6 min-w-[35vw] self-end mt-4 mr-2 p-2 rounded-lg shadow-md border border-gray-300 flex flex-wrap items-center justify-between sm:justify-center">
+          {/* Prev Arrow */}
+          <ArrowBigLeft
+            size={25}
             onClick={() => prevPage()}
             disabled={currentPage === 0}
-            className={`px-4 py-2 text-white rounded-lg transition cursor-pointer ${
-              currentPage === 0
-                ? "bg-gray-400"
-                : "bg-blue-500 hover:bg-blue-700"
-            }`}
-          >
-            Previous
-          </button>
+            className="text-blue-600 hover:text-blue-800 cursor-pointer"
+          />
 
-          <p className="text-gray-700 font-semibold">
+          {/* Page Info */}
+          <p className="text-gray-700 font-semibold text-xs sm:text-sm whitespace-nowrap">
             Page {currentPage + 1} of {images.length}
           </p>
 
+          {/* Delete Icon */}
           {selectedResumeType === "Resumes" && (
-            <button
+            <Trash2
+              size={18}
               onClick={() => handleDeleteResume(selectedResume._id)}
-              className="px-6 py-3 text-white font-semibold rounded-lg transition duration-300 shadow-md flex items-center gap-2 cursor-pointer bg-red-700 hover:bg-red-850 active:bg-red-800 transform hover:scale-105"
-            >
-              Delete Resume
-            </button>
+              className="text-red-600 hover:text-red-800 cursor-pointer"
+            />
           )}
 
+          {/* Download Button */}
           <button
             onClick={handleDownloadPDF}
-            className="px-6 py-3 text-white font-semibold rounded-lg transition duration-300 shadow-md flex items-center gap-2 cursor-pointer bg-green-600 hover:bg-green-800 transform hover:scale-105"
+            className="text-xs sm:text-sm px-3 py-1 sm:px-4 sm:py-2 text-white font-semibold rounded-lg transition duration-300 shadow-md flex items-center gap-1 sm:gap-2 cursor-pointer bg-green-600 hover:bg-green-800 transform hover:scale-105"
           >
-            Download PDF
+            <Download size={20} />
+            {loading ? "Downloading..." : "PDF"}
           </button>
 
-          <button
+          {/* Next Arrow */}
+          <ArrowBigRight
+            size={25}
             onClick={() => nextPage()}
             disabled={currentPage === images.length - 1}
-            className={`px-4 py-2 text-white rounded-lg transition cursor-pointer ${
-              currentPage === images.length - 1
-                ? "bg-gray-400"
-                : "bg-blue-500 hover:bg-blue-700"
-            }`}
-          >
-            Next
-          </button>
+            className="text-blue-600 hover:text-blue-800 cursor-pointer"
+          />
         </div>
       </div>
     </div>
