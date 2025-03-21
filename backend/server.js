@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
-const pdfRoutes = require("./routes/pdfRoutes"); // Import PDF routes
+const pdfRoutes = require("./routes/pdfRoutes");
 const path = require("path");
 
 dotenv.config();

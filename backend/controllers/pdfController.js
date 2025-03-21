@@ -3,7 +3,7 @@ const User = require("../models/User");
 const fs = require("fs");
 const path = require("path");
 
-// 📝 Save PDF and extracted images
+//Save PDF and extracted images
 exports.savePDF = async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
@@ -13,9 +13,8 @@ exports.savePDF = async (req, res) => {
     let pdfFile = null;
     const imageFiles = [];
 
-    const { images, pdf } = req.files; // ✅ Extract files
+    const { images, pdf } = req.files; 
 
-    // Handle PDF (it will be an array with a single item)
     if (pdf && pdf.length > 0) {
       pdfFile = {
         filename: pdf[0].filename,
@@ -23,7 +22,6 @@ exports.savePDF = async (req, res) => {
       };
     }
 
-    // Handle Images (images is already an array)
     if (images && images.length > 0) {
       images.forEach((file) => {
         imageFiles.push({
@@ -40,8 +38,8 @@ exports.savePDF = async (req, res) => {
     // Save PDF data in the database
     const newPDF = new PDF({
       userId: req.user._id,
-      pdfName: pdfFile.filename, // Use the uploaded PDF filename
-      pdfPath: pdfFile.path, // Store the PDF path separately
+      pdfName: pdfFile.filename, 
+      pdfPath: pdfFile.path,
       images,
     });
 
@@ -55,7 +53,7 @@ exports.savePDF = async (req, res) => {
   }
 };
 
-// 📂 Get all PDFs for a user
+//Get all PDFs for a user
 exports.getUserPDFs = async (req, res) => {
   try {
     const pdfs = await PDF.find({ userId: req.user._id });
@@ -66,7 +64,7 @@ exports.getUserPDFs = async (req, res) => {
   }
 };
 
-// 📂 Get all PDFs for the for admin of selected user
+//Get all PDFs for the for admin of selected user
 exports.getUserPDFsForAdmin = async (req, res) => {
   try {
     const pdfs = await PDF.find({ userId: req.params.id });
@@ -77,7 +75,7 @@ exports.getUserPDFsForAdmin = async (req, res) => {
   }
 };
 
-// 📄 Get a single PDF by ID
+//Get a single PDF by ID
 exports.getSinglePDF = async (req, res) => {
   try {
     const pdf = await PDF.findById(req.params.id);
@@ -90,13 +88,12 @@ exports.getSinglePDF = async (req, res) => {
   }
 };
 
-// ❌ Delete a PDF
+//Delete a PDF
 exports.deletePDF = async (req, res) => {
   try {
     const pdf = await PDF.findById(req.params.id);
     if (!pdf) return res.status(404).json({ message: "PDF not found" });
 
-    // Loop through and delete all associated images
     if (pdf.images && pdf.images.length > 0) {
       pdf.images.forEach((image) => {
         const imagePath = path.join(
@@ -105,7 +102,7 @@ exports.deletePDF = async (req, res) => {
           image.path.replace(/\\/g, "/")
         );
         if (fs.existsSync(imagePath)) {
-          fs.unlinkSync(imagePath); // Delete image file
+          fs.unlinkSync(imagePath);
           console.log(`Deleted image: ${imagePath}`);
         } else {
           console.log(`Image not found: ${imagePath}`);
@@ -139,13 +136,12 @@ exports.deletePDF = async (req, res) => {
   }
 };
 
-// ❌ Delete a Template
+//Delete a Template
 exports.deleteTemplatePDF = async (req, res) => {
   try {
     const pdf = await PDF.findById(req.params.id);
     if (!pdf) return res.status(404).json({ message: "PDF not found" });
 
-    // Loop through and delete all associated images
     if (pdf.images && pdf.images.length > 0) {
       pdf.images.forEach((image) => {
         const imagePath = path.join(
@@ -154,7 +150,7 @@ exports.deleteTemplatePDF = async (req, res) => {
           image.path.replace(/\\/g, "/")
         );
         if (fs.existsSync(imagePath)) {
-          fs.unlinkSync(imagePath); // Delete image file
+          fs.unlinkSync(imagePath);
           console.log(`Deleted image: ${imagePath}`);
         } else {
           console.log(`Image not found: ${imagePath}`);
@@ -188,24 +184,17 @@ exports.deleteTemplatePDF = async (req, res) => {
   }
 };
 
-// 📂 Get all PDFs from admin
+//Get all PDFs from admin
 exports.getAdminTemplates = async (req, res) => {
   try {
-    // Step 1: Find the first admin user
     const adminUser = await User.findOne({ role: "admin" });
-
     if (!adminUser) {
       return res.status(404).json({ message: "No admin user found." });
     }
-
-    // Step 2: Fetch all PDFs where the admin ID matches
     const adminPDFs = await PDF.find({ userId: adminUser._id });
-
     if (adminPDFs.length === 0) {
       return res.status(404).json({ message: "No PDFs found for this admin." });
     }
-
-    // Step 3: Send the PDFs in the response
     return res.status(200).json({
       admin: {
         id: adminUser._id,

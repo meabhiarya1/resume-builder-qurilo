@@ -2,21 +2,18 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// Function to ensure directory exists
 const ensureDirectoryExists = (dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 };
 
-// Define directories
 const directories = {
   uploads: "uploads",
   templates: "Templates",
   resumeUserPDF: "ResumeUserPDF",
 };
 
-// Create directories if they don’t exist
 Object.values(directories).forEach(ensureDirectoryExists);
 
 const storage = multer.diskStorage({
@@ -30,17 +27,14 @@ const storage = multer.diskStorage({
 
       let uploadDir;
 
-      // Store PDFs separately
       if (file.mimetype === "application/pdf") {
         uploadDir = directories.resumeUserPDF;
       } else {
-        // Determine upload directory based on user role
         uploadDir =
           req.user.role === "admin"
             ? directories.templates
             : directories.uploads;
       }
-
       cb(null, uploadDir);
     } catch (err) {
       cb(err);
@@ -50,7 +44,6 @@ const storage = multer.diskStorage({
     try {
       if (!file?.originalname)
         return cb(new Error("Invalid file: File or filename missing"));
-
       const uniqueFilename = `${Date.now()}_${file.originalname}`;
       cb(null, uniqueFilename);
     } catch (err) {
@@ -59,7 +52,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// File Filter (Accept only images and PDFs)
 const fileFilter = (req, file, cb) => {
   if (
     file.mimetype.startsWith("image/") ||
@@ -71,7 +63,6 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Multer Middleware
 const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 module.exports = upload;
