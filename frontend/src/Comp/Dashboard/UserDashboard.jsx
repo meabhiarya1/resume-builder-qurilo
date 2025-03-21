@@ -8,7 +8,6 @@ import PDFViewerModalStatic from "../PDFviwerModalStatic/PDFviwerModalStatic";
 import axios from "axios";
 import UserTotalTemplate from "../UserTotalTemplate/UserTotalTemplate";
 
-// ✅ Manually set the workerSrc correctly
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
@@ -33,7 +32,7 @@ const UserDashboard = () => {
     setShowModalModalStatic(true);
   };
 
-  // // Handle File Upload
+  // Handle File Upload
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
 
@@ -49,14 +48,14 @@ const UserDashboard = () => {
       setPdfFile(e.target.result);
       setShowModal(true);
     };
-    reader.readAsDataURL(file); // Read file as Base64
+    reader.readAsDataURL(file);
 
     setPdfFileName(file.name);
-    setPdf(file); // Store file directly instead of Base64
+    setPdf(file); 
     setShowModal(true);
   };
 
-  // ✅ Extract PDF Pages as Images
+  // Extract PDF Pages as Images
   const extractPagesAsImages = async (pdfFile) => {
     try {
       const pdf = await pdfjs.getDocument(pdfFile).promise;
@@ -64,7 +63,7 @@ const UserDashboard = () => {
 
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
-        const scale = 2; // Higher scale for better resolution
+        const scale = 2; 
         const viewport = page.getViewport({ scale });
 
         // Create a canvas to render the page
@@ -89,36 +88,33 @@ const UserDashboard = () => {
 
   const handleDeleteResume = async (id) => {
     if (!id) {
-      alert("Invalid PDF ID!"); // Show error if ID is missing
+      alert("Invalid PDF ID!"); 
       return;
     }
 
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this resume?"
     );
-    if (!confirmDelete) return; // Stop if user cancels
+    if (!confirmDelete) return; 
 
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/api/pdfs/${id}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure authenticated request
+            Authorization: `Bearer ${localStorage.getItem("token")}`, 
           },
         }
       );
 
       if (response.status === 200) {
         alert("Resume deleted successfully!");
-        // Optionally, remove the PDF from state after deletion
         setPdfsInfo((prevPdfs) => prevPdfs.filter((pdf) => pdf._id !== id));
       } else {
         console.log("Failed to delete resume. Please try again.");
-        // toast.error("Failed to delete resume. Please try again.");
       }
     } catch (error) {
       console.error("Error deleting resume:", error);
-      // toast.error("An error occurred while deleting the resume.");
     } finally {
       setShowModalModalStatic(false);
     }
@@ -137,9 +133,8 @@ const UserDashboard = () => {
 
       const formData = new FormData();
       formData.append("pdfName", pdfFileName);
-      formData.append("pdf", pdf); // Ensure the PDF file is appended
+      formData.append("pdf", pdf); 
 
-      // Convert base64 images to Blob and append them
       images.forEach((image, index) => {
         formData.append(
           "images",
@@ -147,11 +142,6 @@ const UserDashboard = () => {
           `page-${index + 1}.png`
         );
       });
-
-      // Debugging: Log FormData to verify PDF is being sent
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
 
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/pdfs`,
@@ -174,44 +164,6 @@ const UserDashboard = () => {
     }
   };
 
-  // const handleSave = async () => {
-  //   setSaving(true);
-  //   const token = localStorage.getItem("token");
-
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append("pdfName", pdfFileName);
-
-  //     // Convert base64 images to Blob and append them
-  //     images.forEach((image, index) => {
-  //       formData.append(
-  //         "images",
-  //         dataURItoBlob(image),
-  //         `page-${index + 1}.png`
-  //       );
-  //     });
-
-  //     const response = await axios.post(
-  //       `${import.meta.env.VITE_BASE_URL}/api/pdfs`,
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     setPdfsInfo((prevPdfs) => [...prevPdfs, response.data.pdf]);
-  //     alert("PDF saved successfully!");
-  //   } catch (error) {
-  //     console.error("Error saving PDF:", error);
-  //     alert("Failed to save PDF");
-  //   } finally {
-  //     setSaving(false);
-  //   }
-  // };
-
-  // Convert Base64 to Blob
   const dataURItoBlob = (dataURI) => {
     const byteString = atob(dataURI.split(",")[1]);
     const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];

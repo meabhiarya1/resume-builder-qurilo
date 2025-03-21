@@ -20,7 +20,7 @@ const UserTotalTemplate = ({
               className="p-4 bg-gray-100 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition transform hover:scale-105"
               onClick={() => handleViewResume(pdf)}
             >
-              <h3 className="text-sm font-semibold max-w-sm text-center">
+              <h3 className="text-sm font-semibold text-center truncate max-w-full">
                 {pdf.pdfName}
               </h3>
             </div>

@@ -9,7 +9,7 @@ import UserResumePDFViewerModalStatic from "../AdminModals/UsersResumeModals/Use
 import * as pdfjs from "pdfjs-dist";
 import "pdfjs-dist/build/pdf.worker.entry";
 
-// ✅ Manually set the workerSrc correctly
+// Manually set the workerSrc correctly
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
@@ -80,7 +80,7 @@ const AdminDashboard = () => {
 
   const handleUserPdfs = async (user) => {
     try {
-      const token = localStorage.getItem("token"); // Get token from storage
+      const token = localStorage.getItem("token");
       setSelectedUser(user);
       const { data } = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/pdfs/${user._id}`,
@@ -89,8 +89,8 @@ const AdminDashboard = () => {
         }
       );
 
-      setPdfData(data); // Store the data in state
-      setIsModalOpen(true); // Open the modal
+      setPdfData(data);
+      setIsModalOpen(true);
     } catch (error) {
       console.error("Error fetching PDFs:", error);
     }
@@ -104,38 +104,36 @@ const AdminDashboard = () => {
 
   const handleDeleteResumeTemplate = async (id) => {
     if (!id) {
-      alert("Invalid PDF ID!"); // Show error if ID is missing
+      alert("Invalid PDF ID!");
       return;
     }
 
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this resume?"
     );
-    if (!confirmDelete) return; // Stop if user cancels
+    if (!confirmDelete) return;
 
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/api/pdfs/template/${id}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure authenticated request
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
 
       if (response.status === 200) {
         alert("Resume deleted successfully!");
-        // Optionally, remove the PDF from state after deletion
+
         setTemplatePdfsInfo((prevPdfs) =>
           prevPdfs.filter((pdf) => pdf._id !== id)
         );
       } else {
         console.log("Failed to delete resume. Please try again.");
-        // toast.error("Failed to delete resume. Please try again.");
       }
     } catch (error) {
       console.error("Error deleting resume:", error);
-      // toast.error("An error occurred while deleting the resume.");
     } finally {
       setShowModalModalStatic(false);
     }
@@ -148,7 +146,7 @@ const AdminDashboard = () => {
 
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
-        const scale = 2; // Higher scale for better resolution
+        const scale = 2;  
         const viewport = page.getViewport({ scale });
 
         // Create a canvas to render the page
@@ -186,10 +184,10 @@ const AdminDashboard = () => {
       setPdfFile(e.target.result);
       setShowModal(true);
     };
-    reader.readAsDataURL(file); // Read file as Base64
+    reader.readAsDataURL(file); 
 
     setPdfFileName(file.name);
-    setPdf(file); // Store file directly instead of Base64
+    setPdf(file);  
     setShowTemplateModal(true);
   };
 
@@ -206,9 +204,9 @@ const AdminDashboard = () => {
 
       const formData = new FormData();
       formData.append("pdfName", pdfFileName);
-      formData.append("pdf", pdf); // Ensure the PDF file is appended
+      formData.append("pdf", pdf);  
 
-      // Convert base64 images to Blob and append them
+       
       images.forEach((image, index) => {
         formData.append(
           "images",
@@ -216,11 +214,6 @@ const AdminDashboard = () => {
           `page-${index + 1}.png`
         );
       });
-
-      // Debugging: Log FormData to verify PDF is being sent
-      // for (const pair of formData.entries()) {
-      //   console.log(pair[0], pair[1]);
-      // }
 
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/pdfs`,

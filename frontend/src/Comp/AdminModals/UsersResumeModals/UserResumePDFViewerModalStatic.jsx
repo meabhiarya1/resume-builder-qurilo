@@ -47,7 +47,7 @@ const UserResumePDFViewerModalStatic = ({
               <img
                 src={`${import.meta.env.VITE_BASE_URL}/${images[
                   currentPage
-                ].path.replace(/\\/g, "/")}`} // Ensure correct path formatting
+                ].path.replace(/\\/g, "/")}`}
                 alt={`Page ${currentPage + 1}`}
                 className="max-h-full max-w-full object-contain"
               />
