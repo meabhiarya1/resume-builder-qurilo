@@ -20,17 +20,10 @@ const PDFViewerModalStatic = ({
   const images = selectedResume.images;
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [pageData, setPageData] = useState({}); // Stores extracted & edited content for each page
-  const quillRefs = useRef({}); // Store refs for each page's editor
-  const [textLoaded, setTextLoaded] = useState(false); // Ensure first page is loaded properly
   const [pdfLoaded, setPdfLoaded] = useState(false); // Ensure first page is loaded properly
   const [content, setContent] = useState("");
   const editorRef = useRef(null);
 
-  useEffect(() => {
-    // extractAllPagesData( ); // Extract data for all pages at once
-  }, [selectedResume]);
- 
   useEffect(() => {
     const loadPdf = async () => {
       if (!selectedResume || !selectedResume.pdfName) return;
@@ -39,6 +32,7 @@ const PDFViewerModalStatic = ({
         selectedResume.pdfName
       }`;
       setPdfLoaded(pdfUrl);
+      console.log(pdfUrl);
 
       try {
         const response = await fetch(pdfUrl);
@@ -61,7 +55,7 @@ const PDFViewerModalStatic = ({
           });
         }
         contentSet = htmlContent;
-      
+        console.log(htmlContent);
         setContent(htmlContent);
       } catch (error) {
         console.error("Error loading PDF:", error);
@@ -71,64 +65,13 @@ const PDFViewerModalStatic = ({
     loadPdf();
   }, []);
 
-  const extractAllPagesData = async () => {
-    setLoading(true);
-    let extractedData = {};
-
-    for (let i = 0; i < images.length; i++) {
-      const imagePath = `${import.meta.env.VITE_BASE_URL}/${images[
-        i
-      ].path.replace(/\\/g, "/")}`;
-
-      try {
-        const { data } = await Tesseract.recognize(imagePath, "eng", {
-          logger: (m) => console.log(m),
-          oem: 1,
-          psm: 6,
-        });
-
-        extractedData[i] = data.text || "No text found"; // Store extracted text in state
-      } catch (error) {
-        console.error(`OCR Error on page ${i}:`, error);
-        extractedData[i] = "Error extracting text";
-      }
-    }
-
-    setPageData(extractedData); // Save extracted data in state
-    setTextLoaded(true); // Ensure first page is displayed
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    if (textLoaded && quillRefs.current[currentPage]) {
-      quillRefs.current[currentPage].getEditor().root.innerHTML =
-        pageData[currentPage] || "";
-    }
-  }, [currentPage, textLoaded]);
-
   const nextPage = () => {
-    // Save current page content before switching
-    if (quillRefs.current[currentPage]) {
-      setPageData((prev) => ({
-        ...prev,
-        [currentPage]:
-          quillRefs.current[currentPage].getEditor().root.innerHTML,
-      }));
-    }
     if (currentPage < images.length - 1) {
       setCurrentPage((prev) => prev + 1);
     }
   };
 
   const prevPage = () => {
-    // Save current page content before switching
-    if (quillRefs.current[currentPage]) {
-      setPageData((prev) => ({
-        ...prev,
-        [currentPage]:
-          quillRefs.current[currentPage].getEditor().root.innerHTML,
-      }));
-    }
     if (currentPage > 0) {
       setCurrentPage((prev) => prev - 1);
     }
@@ -198,13 +141,13 @@ const PDFViewerModalStatic = ({
                 </div>
               )}
               {images.length > 0 ? (
-                <div className="w-full flex justify-center items-center">
+                <div className="w-full flex justify-center items-center  ">
                   <img
                     src={`${import.meta.env.VITE_BASE_URL}/${images[
                       currentPage
                     ].path.replace(/\\/g, "/")}`}
                     alt={`Page ${currentPage + 1}`}
-                    className="max-h-full max-w-full object-contain"
+                    className=""
                   />
                 </div>
               ) : (
@@ -271,7 +214,7 @@ const PDFViewerModalStatic = ({
                 : "bg-blue-500 hover:bg-blue-700"
             }`}
           >
-            ◀ Previous
+            Previous
           </button>
 
           <p className="text-gray-700 font-semibold">
@@ -283,7 +226,7 @@ const PDFViewerModalStatic = ({
               onClick={() => handleDeleteResume(selectedResume._id)}
               className="px-6 py-3 text-white font-semibold rounded-lg transition duration-300 shadow-md flex items-center gap-2 cursor-pointer bg-red-700 hover:bg-red-850 active:bg-red-800 transform hover:scale-105"
             >
-              🗑️ Delete Resume
+              Delete Resume
             </button>
           )}
 
@@ -291,7 +234,7 @@ const PDFViewerModalStatic = ({
             onClick={handleDownloadPDF}
             className="px-6 py-3 text-white font-semibold rounded-lg transition duration-300 shadow-md flex items-center gap-2 cursor-pointer bg-green-600 hover:bg-green-800 transform hover:scale-105"
           >
-            📄 Download PDF
+            Download PDF
           </button>
 
           <button
@@ -303,7 +246,7 @@ const PDFViewerModalStatic = ({
                 : "bg-blue-500 hover:bg-blue-700"
             }`}
           >
-            Next ▶
+            Next
           </button>
         </div>
       </div>
