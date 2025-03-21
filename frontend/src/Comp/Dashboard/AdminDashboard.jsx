@@ -72,12 +72,6 @@ const AdminDashboard = () => {
     fetchedTempateData();
   }, []);
 
-  useEffect(() => {
-    if (pdfFile) {
-      extractPagesAsImages(pdfFile);
-    }
-  }, [pdfFile]);
-
   const handleUserPdfs = async (user) => {
     try {
       const token = localStorage.getItem("token");
@@ -146,7 +140,7 @@ const AdminDashboard = () => {
 
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
-        const scale = 2;  
+        const scale = 2;
         const viewport = page.getViewport({ scale });
 
         // Create a canvas to render the page
@@ -182,12 +176,12 @@ const AdminDashboard = () => {
     const reader = new FileReader();
     reader.onload = (e) => {
       setPdfFile(e.target.result);
-      setShowModal(true);
+      setShowTemplateModal(true);
     };
-    reader.readAsDataURL(file); 
+    reader.readAsDataURL(file);
 
     setPdfFileName(file.name);
-    setPdf(file);  
+    setPdf(file);
     setShowTemplateModal(true);
   };
 
@@ -204,9 +198,8 @@ const AdminDashboard = () => {
 
       const formData = new FormData();
       formData.append("pdfName", pdfFileName);
-      formData.append("pdf", pdf);  
+      formData.append("pdf", pdf);
 
-       
       images.forEach((image, index) => {
         formData.append(
           "images",
@@ -227,6 +220,8 @@ const AdminDashboard = () => {
       );
 
       setTemplatePdfsInfo((prevPdfs) => [...prevPdfs, response.data.pdf]);
+      setShowTemplateModal(false);
+      setImages([]);
       alert("PDF saved successfully!");
     } catch (error) {
       console.error("Error saving PDF:", error);
@@ -248,6 +243,14 @@ const AdminDashboard = () => {
 
     return new Blob([arrayBuffer], { type: mimeString });
   };
+
+  useEffect(() => {
+    if (pdfFile) {
+      extractPagesAsImages(pdfFile);
+    }
+  }, [pdfFile]);
+
+  useEffect(() => {}, [handleTemplateUpload]);
 
   return (
     <div>

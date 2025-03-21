@@ -73,7 +73,7 @@ const TemplateViewerModal = ({
                     : "bg-blue-500 hover:bg-blue-700"
                 }`}
               >
-                ◀ Previous
+                Previous
               </button>
 
               <button
@@ -81,7 +81,7 @@ const TemplateViewerModal = ({
                 disabled={saving}
                 className="px-4 py-2 bg-green-500 hover:bg-green-700 text-white rounded-lg transition cursor-pointer"
               >
-                {saving ? "Saving..." : "💾 Save Template"}
+                {saving ? "Saving..." : "Save Template"}
               </button>
 
               <button
@@ -91,7 +91,7 @@ const TemplateViewerModal = ({
                 }}
                 className="cursor-pointer px-4 py-2 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold rounded-lg shadow-md transition-transform transform hover:scale-105"
               >
-                💾 Upload Again
+                Upload Again
               </button>
 
               <button
@@ -103,7 +103,7 @@ const TemplateViewerModal = ({
                     : "bg-blue-500 hover:bg-blue-700"
                 }`}
               >
-                Next ▶
+                Next
               </button>
             </div>
           </div>
