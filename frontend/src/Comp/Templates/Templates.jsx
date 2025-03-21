@@ -18,12 +18,23 @@ const Templates = ({
             key={pdf._id}
             className="relative p-4 bg-gray-100 rounded-lg shadow-md transition transform hover:scale-105 hover:shadow-xl flex flex-col items-center"
           >
+            {pdf.images?.[0] && (
+              <img
+                src={`${
+                  import.meta.env.VITE_BASE_URL
+                }/${pdf.images[0].path.replace(/\\/g, "/")}`}
+                alt="Preview"
+                className="w-full h-48 object-cover rounded mb-3"
+              />
+            )}
+
             {/* PDF Name */}
-            <h3 className="text-sm font-semibold text-center text-gray-800 mb-2">
+            <h3 className="text-sm font-semibold text-center text-gray-800 mb-2 truncate w-[200px]">
               {pdf.pdfName}
             </h3>
 
-            <div className="flex gap-4 ">
+            {/* Action Buttons */}
+            <div className="flex gap-4 w-full">
               {/* View Button */}
               <button
                 onClick={() => handleViewResume(pdf)}
@@ -35,7 +46,7 @@ const Templates = ({
               {/* Delete Button */}
               <button
                 onClick={() => handleDeleteResumeTemplate(pdf._id)}
-                className="flex items-center justify-center gap-2 bg-red-600 px-4 py-2 rounded-md text-sm font-medium w-full  text-white hover:text-black transition cursor-pointer"
+                className="flex items-center justify-center gap-2 bg-red-600 px-4 py-2 rounded-md text-sm font-medium w-full text-white hover:text-black transition cursor-pointer"
               >
                 <Trash2 size={18} />
               </button>

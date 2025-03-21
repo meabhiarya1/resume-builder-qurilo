@@ -9,7 +9,6 @@ import UserResumePDFViewerModalStatic from "../AdminModals/UsersResumeModals/Use
 import * as pdfjs from "pdfjs-dist";
 import "pdfjs-dist/build/pdf.worker.entry";
 
-// Manually set the workerSrc correctly
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
