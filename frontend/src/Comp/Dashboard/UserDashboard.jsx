@@ -51,7 +51,7 @@ const UserDashboard = () => {
     reader.readAsDataURL(file);
 
     setPdfFileName(file.name);
-    setPdf(file); 
+    setPdf(file);
     setShowModal(true);
   };
 
@@ -63,7 +63,7 @@ const UserDashboard = () => {
 
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
-        const scale = 2; 
+        const scale = 2;
         const viewport = page.getViewport({ scale });
 
         // Create a canvas to render the page
@@ -88,21 +88,21 @@ const UserDashboard = () => {
 
   const handleDeleteResume = async (id) => {
     if (!id) {
-      alert("Invalid PDF ID!"); 
+      alert("Invalid PDF ID!");
       return;
     }
 
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this resume?"
     );
-    if (!confirmDelete) return; 
+    if (!confirmDelete) return;
 
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/api/pdfs/${id}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, 
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
@@ -133,7 +133,7 @@ const UserDashboard = () => {
 
       const formData = new FormData();
       formData.append("pdfName", pdfFileName);
-      formData.append("pdf", pdf); 
+      formData.append("pdf", pdf);
 
       images.forEach((image, index) => {
         formData.append(
@@ -155,6 +155,8 @@ const UserDashboard = () => {
       );
 
       setPdfsInfo((prevPdfs) => [...prevPdfs, response.data.pdf]);
+      setShowModal(false);
+      setImages([]);
       alert("PDF saved successfully!");
     } catch (error) {
       console.error("Error saving PDF:", error);

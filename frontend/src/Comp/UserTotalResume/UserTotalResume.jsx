@@ -5,6 +5,8 @@ const UserTotalResume = ({
   handleViewResume,
   setSelectedResumeType,
 }) => {
+  if (pdfsInfo.length === 0 || !pdfsInfo) return null;
+
   return (
     <div
       className="p-6 max-w-5xl mt-10"

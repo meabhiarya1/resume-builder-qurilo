@@ -5,6 +5,9 @@ const UserTotalTemplate = ({
   handleViewResume,
   setSelectedResumeType,
 }) => {
+
+  if(templates.length === 0 || !templates) return null
+
   return (
     <div
       className="p-6 max-w-5xl mt-10"
