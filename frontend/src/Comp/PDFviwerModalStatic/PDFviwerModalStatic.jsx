@@ -4,6 +4,9 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Quill editor styles
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import * as pdfjsLib from "pdfjs-dist";
+import JoditEditor from "jodit-react";
+import html2pdf from "html2pdf.js";
 
 const PDFViewerModalStatic = ({
   setShowModalModalStatic,
@@ -13,17 +16,60 @@ const PDFViewerModalStatic = ({
   selectedResumeType,
 }) => {
   if (!selectedResume || !selectedResume.images) return null;
-
+  let contentSet = "";
   const images = selectedResume.images;
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [pageData, setPageData] = useState({}); // Stores extracted & edited content for each page
   const quillRefs = useRef({}); // Store refs for each page's editor
   const [textLoaded, setTextLoaded] = useState(false); // Ensure first page is loaded properly
+  const [pdfLoaded, setPdfLoaded] = useState(false); // Ensure first page is loaded properly
+  const [content, setContent] = useState("");
+  const editorRef = useRef(null);
 
   useEffect(() => {
-    extractAllPagesData(); // Extract data for all pages at once
+    // extractAllPagesData( ); // Extract data for all pages at once
   }, [selectedResume]);
+ 
+  useEffect(() => {
+    const loadPdf = async () => {
+      if (!selectedResume || !selectedResume.pdfName) return;
+
+      const pdfUrl = `${import.meta.env.VITE_BASE_URL}/pdf/${
+        selectedResume.pdfName
+      }`;
+      setPdfLoaded(pdfUrl);
+
+      try {
+        const response = await fetch(pdfUrl);
+        const arrayBuffer = await response.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        let htmlContent = "";
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+
+          textContent.items.forEach((item) => {
+            const style = `
+                        font-size: ${item.transform[0] / 0.7}px;
+                        font-weight: ${
+                          item.fontName.includes("Bold") ? "bold" : "normal"
+                        };
+                    `;
+            htmlContent += `<p style="${style}">${item.str}</p>`;
+          });
+        }
+        contentSet = htmlContent;
+      
+        setContent(htmlContent);
+      } catch (error) {
+        console.error("Error loading PDF:", error);
+      }
+    };
+
+    loadPdf();
+  }, []);
 
   const extractAllPagesData = async () => {
     setLoading(true);
@@ -89,42 +135,38 @@ const PDFViewerModalStatic = ({
   };
 
   const handleDownloadPDF = async () => {
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pdfWidth = 210;
-    const pdfHeight = 297;
-    const margin = 10;
+    const element = document.createElement("div");
+    element.innerHTML = contentSet;
+    element.style.width = "210mm"; // Ensures A4 width for proper scaling
+    element.style.padding = "10mm"; // Adds padding for better spacing
 
-    for (let i = 0; i < images.length; i++) {
-      let imgData;
-      const pageElement = document.getElementById(`resume-page-${i}`);
+    const options = {
+      margin: 10,
+      filename: `${selectedResume?.pdfName || "Edited_Resume"}.pdf`,
+      image: { type: "jpeg", quality: 1 }, // Maximum image quality
+      html2canvas: {
+        scale: 3, // Higher scale improves resolution
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        scrollY: 0, // Prevents scrolling issues when capturing the content
+      },
+      jsPDF: {
+        unit: "mm",
+        format: "a4",
+        orientation: "portrait",
+        precision: 16,
+      },
+      pagebreak: { mode: ["css", "avoid-all", "legacy"] }, // Ensures proper page breaks
+    };
 
-      if (pageElement) {
-        try {
-          const canvas = await html2canvas(pageElement, {
-            scale: 2,
-            useCORS: true,
-          });
-          imgData = canvas.toDataURL("image/png");
-        } catch (error) {
-          console.error("Error capturing canvas:", error);
-          continue;
-        }
-      }
+    document.body.appendChild(element);
+    await html2pdf().from(element).set(options).save();
+    document.body.removeChild(element);
+  };
 
-      if (imgData) {
-        if (i > 0) pdf.addPage();
-        pdf.addImage(
-          imgData,
-          "PNG",
-          margin,
-          margin,
-          pdfWidth - 2 * margin,
-          pdfHeight - 2 * margin
-        );
-      }
-    }
-
-    pdf.save(`${selectedResume?.pdfName || "Edited_Resume"}.pdf`);
+  const handleContentChange = (newContent) => {
+    contentSet = newContent;
   };
 
   return (
@@ -182,42 +224,35 @@ const PDFViewerModalStatic = ({
                 className="absolute bg-white shadow-md p-3 rounded-lg w-full"
               >
                 {/* ReactQuill Editor with useRef */}
-                <ReactQuill
-                  key={currentPage} // Forces re-render when page changes
-                  ref={(el) => (quillRefs.current[currentPage] = el)}
-                  defaultValue={pageData[currentPage] || ""}
-                  modules={{
-                    toolbar: [
-                      [{ header: [1, 2, 3, false] }],
-                      ["bold", "italic", "underline", "strike"],
-                      [{ list: "ordered" }, { list: "bullet" }],
-                      [{ indent: "-1" }, { indent: "+1" }],
-                      [{ align: [] }],
-                      ["blockquote", "code-block"],
-                      [{ color: [] }, { background: [] }],
-                      ["clean"],
+
+                <JoditEditor
+                  ref={editorRef}
+                  value={content || ""}
+                  onChange={handleContentChange}
+                  config={{
+                    readonly: false,
+                    height: 550,
+                    toolbarAdaptive: false,
+                    toolbar: true, // Enable toolbar
+                    buttons: [
+                      "bold",
+                      "italic",
+                      "underline",
+                      "|", // Basic text formatting
+                      "ul",
+                      "ol",
+                      "|", // Lists
+                      "link",
+                      "unlink",
+                      "|", // Links
+                      "undo",
+                      "redo",
+                      "|", // Undo/Redo
+                      "hr",
+                      "eraser",
+                      "source", // Divider, Clear, Code view
                     ],
-                  }}
-                  formats={[
-                    "header",
-                    "bold",
-                    "italic",
-                    "underline",
-                    "strike",
-                    "blockquote",
-                    "list",
-                    "bullet",
-                    "indent",
-                    "align",
-                    "code-block",
-                    "color",
-                    "background",
-                  ]}
-                  theme="snow"
-                  style={{
-                    fontFamily: '"Courier New", monospace',
-                    whiteSpace: "pre-wrap",
-                    lineHeight: "1.6",
+                    placeholder: "Insert text here...",
                   }}
                 />
               </div>
