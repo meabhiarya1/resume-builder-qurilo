@@ -12,7 +12,6 @@ const PDFViewerModalStatic = ({
   selectedResumeType,
 }) => {
   if (!selectedResume || !selectedResume?.images) return null;
-  let contentSet = "";
   const images = selectedResume?.images;
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(false);

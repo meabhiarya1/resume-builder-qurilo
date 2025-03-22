@@ -185,6 +185,7 @@ const UserDashboard = () => {
       setTemplates(response?.data?.templates);
     } catch (error) {
       console.error("Error fetching templates:", error);
+      
     }
   };
 
