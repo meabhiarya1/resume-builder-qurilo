@@ -5,43 +5,33 @@ const Navbar = ({ setActiveTab }) => {
   const { user, logout } = useContext(AuthContext);
 
   return (
-    <nav className="bg-gray-800 p-4 text-white flex justify-between">
-      <h1 className="text-lg flex items-center">Resume Builder</h1>
-      <div className="flex gap-4">
-        {" "}
+    <nav className="bg-gray-800 p-4 text-white flex flex-col md:flex-row items-center justify-between gap-3">
+      <h1 className="text-lg font-semibold">Resume Builder</h1>
+
+      <div className="flex items-center gap-3 flex-wrap justify-center">
         {user?.role === "admin" &&
           ["users", "templates", "uploads"].map((tab) => (
-            <div
-              key={tab}
-              className="bg-gradient-to-b from-stone-300/40 to-transparent rounded-[16px]"
-            >
-              <button
-                className={`group px-[3px] rounded-[12px] active:shadow-[0_0px_1px_rgba(0,0,0,0.5)] 
-                active:scale-[0.995] w-full cursor-pointer`}
-                onClick={() => setActiveTab(tab)}
-              >
-                <div className="  rounded-[8px] px-2 py-1">
-                  <div className="flex gap-2 items-center justify-center">
-                    <span className="capitalize">{tab}</span>
-                  </div>
-                </div>
-              </button>
-            </div>
-          ))}
-        {user && (
-          <>
-            <span className="mr-4 text-sm text-center flex items-center">
-              Hello, {user?.name}
-            </span>
             <button
-              onClick={logout}
-              className="bg-red-500 px-3 py-1 rounded cursor-pointer"
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className="cursor-pointer px-3 py-1 bg-gradient-to-b from-gray-700 to-gray-800 rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all text-sm capitalize"
             >
-              Logout
+              {tab}
             </button>
-          </>
-        )}
+          ))}
       </div>
+
+      {user && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-sm">Hello, {user?.name}</span>
+          <button
+            onClick={logout}
+            className="bg-red-500 px-3 py-1 rounded-lg hover:bg-red-600 transition cursor-pointer text-sm"
+          >
+            Logout
+          </button>
+        </div>
+      )}
     </nav>
   );
 };

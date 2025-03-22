@@ -162,7 +162,7 @@ const AdminDashboard = () => {
   };
 
   const handleTemplateUpload = (e) => {
-    console.log("file")
+    console.log("file");
     const file = e.target.files[0];
     if (!file) {
       alert("Please upload a valid PDF file.");
@@ -254,8 +254,8 @@ const AdminDashboard = () => {
   return (
     <div>
       <Navbar setActiveTab={setActiveTab} />
-      <div className="grid grid-cols-4 h-[80vh] mt-8 px-4">
-        <div className="col-span-6 overflow-y-auto p-4">
+      <div className="flex flex-wrap justify-start md:justify-between gap-4 w-full px-4 bg-[#3F4F44] min-h-screen">
+        <div className="w-full overflow-y-auto p-4">
           {activeTab === "users" && (
             <TotalUsers
               users={users}

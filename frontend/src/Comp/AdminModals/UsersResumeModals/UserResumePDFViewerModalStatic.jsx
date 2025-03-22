@@ -36,12 +36,12 @@ const UserResumePDFViewerModalStatic = ({
           ✖
         </button>
 
-        <h2 className="text-2xl font-bold mb-1 text-center">
+        <h2 className="text-2xl font-bold text-center truncate max-w-[300px] mb-3">
           {selectedResume.pdfName}
         </h2>
 
         {/* Image Viewer */}
-        <div className="h-[70vh] w-full flex flex-col border rounded-lg shadow-md overflow-auto">
+        <div className="md:h-[70vh] h-[40vh] w-full flex flex-col border rounded-lg shadow-md overflow-auto">
           {images.length > 0 ? (
             <div className="w-full flex justify-start">
               <img
@@ -62,7 +62,7 @@ const UserResumePDFViewerModalStatic = ({
           <button
             onClick={prevPage}
             disabled={currentPage === 0}
-            className={`px-4 py-2 text-white rounded-lg transition cursor-pointer ${
+            className={`px-4 py-2 text-white rounded-lg transition cursor-pointer font-semibold  ${
               currentPage === 0
                 ? "bg-gray-400"
                 : "bg-blue-500 hover:bg-blue-700"
@@ -78,7 +78,7 @@ const UserResumePDFViewerModalStatic = ({
           <button
             onClick={nextPage}
             disabled={currentPage === images.length - 1}
-            className={`px-4 py-2 text-white rounded-lg transition cursor-pointer ${
+            className={`px-4 py-2 text-white rounded-lg transition cursor-pointer font-semibold ${
               currentPage === images.length - 1
                 ? "bg-gray-400"
                 : "bg-blue-500 hover:bg-blue-700"

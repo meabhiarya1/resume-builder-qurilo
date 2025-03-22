@@ -5,15 +5,15 @@ const TotalUsers = ({ loading, users, error, handleUserPdfs }) => {
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="px-6">
-      <h2 className="text-2xl font-bold mb-4 text-center"> Users</h2>
+    <div className="px-6 ">
+      <h2 className="text-2xl font-bold mb-4 text-center text-amber-50">Users</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {users
           ?.filter((user) => user.role !== "admin") 
           .map((user) => (
             <div
               key={user._id}
-              className="flex flex-col bg-white rounded-3xl shadow-lg border border-gray-200"
+              className="flex flex-col bg-white rounded-3xl shadow-lg   border-3 border-gray-500 "
             >
               <div className="px-6 py-8 sm:p-10 sm:pb-6">
                 <div className="grid items-center justify-center w-full text-left">

@@ -10,7 +10,7 @@ const UsersResumeModals = ({
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-invert backdrop-opacity-30 backdrop-blur-sm z-50">
       {/* Modal Card */}
-      <div className="w-[600px] p-4 relative flex flex-col items-center justify-center bg-gray-800 border border-gray-700 shadow-lg rounded-2xl">
+      <div className="w-[600px] p-4 relative flex flex-col items-center justify-center bg-gray-800 border border-gray-700 shadow-lg rounded-2xl mx-4">
         {/* Modal Content */}
         <div className="text-center p-3 flex-auto justify-center">
           <h2 className="text-xl font-bold py-4 text-gray-200">
@@ -33,23 +33,23 @@ const UsersResumeModals = ({
                 className="bg-gray-700 p-3 rounded-md shadow-sm flex justify-between items-center"
               >
                 <div>
-                  <h3 className="text-lg font-semibold text-white">
+                  <h3 className="text-lg font-semibold text-white truncate max-w-[300px]" >
                     {pdf.pdfName}
                   </h3>
                 </div>
                 <button
-                  className="bg-green-500 hover:bg-green-600 px-3 py-1 text-white text-sm rounded-lg cursor-pointer"
+                  className="bg-green-500 hover:bg-green-600 px-3 py-2 text-white text-sm rounded-lg cursor-pointer font-semibold"
                   onClick={() => {
                     setSelectedResume(pdf);
                     setShowModalModalStatic(true);
                   }}
                 >
-                  Show Details
+                  Details
                 </button>
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-400">No PDFs found.</p>
+            <p className="text-center text-red-400">No Resume found.</p>
           )}
         </div>
 

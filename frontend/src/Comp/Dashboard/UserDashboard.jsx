@@ -141,7 +141,7 @@ const UserDashboard = () => {
       );
       if (response.status === 401) {
         setPdfsInfo([]);
-        return
+        return;
       }
 
       setPdfsInfo((prevPdfs) => [...prevPdfs, response?.data?.pdf]);
@@ -179,13 +179,12 @@ const UserDashboard = () => {
       );
       if (response.status === 401) {
         setPdfsInfo([]);
-        return
+        return;
       }
       // console.log("Templates Data:", response?.data);
       setTemplates(response?.data?.templates);
     } catch (error) {
       console.error("Error fetching templates:", error);
-      
     }
   };
 
@@ -208,7 +207,7 @@ const UserDashboard = () => {
         );
         if (response.status === 401) {
           setPdfsInfo([]);
-          return
+          return;
         }
         const data = await response?.json();
         setPdfsInfo(data);
@@ -257,10 +256,12 @@ const UserDashboard = () => {
         </div>
 
         {/* Upload Section */}
-        <div className="flex items-center w-[100vw] min-2xl:w-[25vw] min-xl:[40vw] mt-[70px] px-6 justify-center h-[calc(100vh-250px)] max-md:h-[200px] max-lg:mb-12 ">
-          <div className="w-[100%] overflow-hidden rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
+        <div className="  flex items-center w-[100vw] min-2xl:w-[25vw] min-xl:[40vw] mt-[70px] px-6 justify-center h-[calc(100vh-250px)] max-md:h-[200px] max-lg:mb-12 ">
+          <div className="border-3 border-gray-700 w-[100%] overflow-hidden rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
             <div className=" p-6 ">
-              <h3 className="text-lg font-semibold text-white">Upload Files</h3>
+              <h3 className="text-lg font-semibold text-amber-50">
+                Upload Files
+              </h3>
               <p className="text-sm text-slate-400">
                 Drag & drop your files here
               </p>
@@ -304,4 +305,3 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
-  
