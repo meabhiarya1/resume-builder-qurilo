@@ -224,7 +224,7 @@ const UserDashboard = () => {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#3F4F44]">
       {/* Navbar */}
       <Navbar />
 
@@ -240,8 +240,8 @@ const UserDashboard = () => {
         />
       )}
 
-      <div className="flex max-md:flex-col-reverse max-lg:gap-6">
-        <div className="min-md:overflow-x-scroll h-[calc(100vh-90px)] w-[100vw] min-2xl:w-[75vw] min-xl:[60vw]">
+      <div className="flex max-md:flex-col-reverse max-lg:gap-6 my-4">
+        <div className="min-md:overflow-y-auto h-[calc(100vh-90px)] w-[100vw] min-2xl:w-[75vw] min-xl:[60vw] custom-scrollbar">
           <UserTotalResume
             pdfsInfo={pdfsInfo}
             handleViewResume={handleViewResume}
@@ -257,7 +257,7 @@ const UserDashboard = () => {
         </div>
 
         {/* Upload Section */}
-        <div className="flex items-center w-[100vw]  min-2xl:w-[25vw] min-xl:[40vw] mt-[70px] px-6 justify-center h-[calc(100vh-250px)] max-md:h-[200px] max-lg:mb-12">
+        <div className="flex items-center w-[100vw] min-2xl:w-[25vw] min-xl:[40vw] mt-[70px] px-6 justify-center h-[calc(100vh-250px)] max-md:h-[200px] max-lg:mb-12 ">
           <div className="w-[100%] overflow-hidden rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
             <div className=" p-6 ">
               <h3 className="text-lg font-semibold text-white">Upload Files</h3>
@@ -304,3 +304,4 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
+  

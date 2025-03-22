@@ -7,15 +7,15 @@ const UserTotalTemplate = ({
 }) => {
   return (
     <div
-      className="p-6 border border-gray-200 flex flex-col m-2 rounded-lg "
+      className="p-6 border-gray-800 flex flex-col m-2 rounded-lg border-3 bg-black/30"
       onClick={() => setSelectedResumeType("Templates")}
     >
-      <h2 className="text-2xl font-bold mb-4 mx-auto p-2 text-center">
+      <h2 className="text-2xl font-bold mx-auto p-2 text-center text-amber-50">
         Templates
       </h2>
 
-      <div className="flex-shrink-0">
-        <div className="flex gap-4 p-4 border rounded-lg shadow-lg bg-white overflow-x-auto">
+      <div className="flex-shrink-0 ">
+        <div className="flex gap-4 p-4  rounded-lg shadow-[0_12px_24px_rgba(0,0,0,0.25)] overflow-x-auto custom-scrollbar ">
           {templates && templates.length > 0 ? (
             templates.map((pdf) => (
               <div
