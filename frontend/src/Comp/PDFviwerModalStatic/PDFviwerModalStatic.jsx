@@ -50,7 +50,6 @@ const PDFViewerModalStatic = ({
             htmlContent += `<p style="${style}">${item.str}</p>`;
           });
         }
-        contentSet = htmlContent;
         setContent(htmlContent);
       } catch (error) {
         console.error("Error loading PDF:", error);
