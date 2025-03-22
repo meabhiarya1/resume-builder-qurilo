@@ -1,7 +1,6 @@
 import React from "react";
 import TemplateViewerModal from "../TemplateViewerModal/TemplateViewerModal";
 
-
 const Uploads = ({
   handleSave,
   saving,
@@ -9,16 +8,15 @@ const Uploads = ({
   handleTemplateUpload,
   showTemplateModal,
   images,
-  setImages
+  setImages,
 }) => {
-
   return (
     <div className="flex flex-col justify-center items-center p-6">
-      <div className="flex flex-grow">
+      <div className="flex flex-grow items-center justify-center ">
         <div className="flex flex-grow items-center justify-center">
-          <div className="group relative w-[420px]">
-            <div className="relative overflow-hidden rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
-              <div className="relative p-6">
+          <div className="group relative sm:w-[480px] w-[350px]">
+            <div className="relative overflow-hidden  rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
+              <div className="relative p-6 ">
                 <h3 className="text-lg font-semibold text-white">
                   Upload Template Files
                 </h3>

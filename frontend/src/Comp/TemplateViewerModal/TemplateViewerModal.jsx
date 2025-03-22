@@ -65,11 +65,11 @@ const TemplateViewerModal = ({
             </div>
 
             {/* Page Navigation */}
-            <div className="mt-4 flex items-center justify-between w-full">
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2 w-full">
               <button
                 onClick={prevPage}
                 disabled={currentPage === 0}
-                className={`px-4 py-2 text-white rounded-lg transition cursor-pointer ${
+                className={`px-3 py-2 text-sm text-white rounded-lg transition cursor-pointer font-semibold ${
                   currentPage === 0
                     ? "bg-gray-400"
                     : "bg-blue-500 hover:bg-blue-700"
@@ -81,9 +81,9 @@ const TemplateViewerModal = ({
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="px-4 py-2 bg-green-500 hover:bg-green-700 text-white rounded-lg transition cursor-pointer"
+                className="px-3 py-2 text-sm bg-green-500 hover:bg-green-700 text-white rounded-lg transition cursor-pointer font-semibold"
               >
-                {saving ? "Saving..." : "Save Template"}
+                {saving ? "Saving..." : "Save "}
               </button>
 
               <button
@@ -91,15 +91,15 @@ const TemplateViewerModal = ({
                   setImages([]);
                   setShowTemplateModal(false);
                 }}
-                className="cursor-pointer px-4 py-2 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold rounded-lg shadow-md transition-transform transform hover:scale-105"
+                className="px-3 py-2 text-sm bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold rounded-lg shadow-md transition-transform transform hover:scale-105 cursor-pointer"
               >
-                Upload Again
+                Upload 
               </button>
 
               <button
                 onClick={nextPage}
                 disabled={currentPage === images.length - 1}
-                className={`px-4 py-2 text-white rounded-lg transition cursor-pointer ${
+                className={`px-3 py-2 text-sm text-white rounded-lg transition cursor-pointer font-semibold ${
                   currentPage === images.length - 1
                     ? "bg-gray-400"
                     : "bg-blue-500 hover:bg-blue-700"

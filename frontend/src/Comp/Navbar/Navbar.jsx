@@ -10,7 +10,7 @@ const Navbar = ({ setActiveTab }) => {
 
       <div className="flex items-center gap-3 flex-wrap justify-center">
         {user?.role === "admin" &&
-          ["users", "templates", "uploads"].map((tab) => (
+          ["users", "templates", "upload"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
