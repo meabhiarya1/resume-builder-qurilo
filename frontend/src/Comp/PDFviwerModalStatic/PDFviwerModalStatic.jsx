@@ -20,10 +20,10 @@ const PDFViewerModalStatic = ({
 
   useEffect(() => {
     const loadPdf = async () => {
-      if (!selectedResume || !selectedResume.pdfName) return;
+      if (!selectedResume || !selectedResume?.pdfName) return;
       setLoading(true);
       const pdfUrl = `${import.meta.env.VITE_BASE_URL}/pdf/${
-        selectedResume.pdfName
+        selectedResume?.pdfName
       }`;
 
       if (!pdfUrl) return;
@@ -74,7 +74,7 @@ const PDFViewerModalStatic = ({
   const handleDownloadPDF = async () => {
     setLoading(true);
     const element = document.createElement("div");
-    element.innerHTML = content; 
+    element.innerHTML = content;
     element.style.width = "210mm";
     element.style.padding = "5mm";
 
@@ -109,11 +109,11 @@ const PDFViewerModalStatic = ({
   };
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70 z-50 w-full">
-      <div className="relative bg-white p-6 rounded-lg shadow-2xl w-[80vw] max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="flex-grow flex flex-col md:flex-row w-full overflow-y-auto ">
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70 z-50 w-full ">
+      <div className="relative bg-white py-6 px-2 rounded-lg shadow-2xl w-[90vw] max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="flex-grow flex flex-col md:flex-row w-full overflow-y-auto">
           {/* Left Side: Image Viewer */}
-          <div className="w-full md:w-1/2 p-2 flex flex-col">
+          <div className="w-full md:w-1/2 p-2 flex flex-col h-[400px] md:h-full ">
             <button
               onClick={() => {
                 setShowModalModalStatic(false);
@@ -124,8 +124,8 @@ const PDFViewerModalStatic = ({
               ✖
             </button>
 
-            <h2 className="text-2xl font-bold mb-4 text-center">
-              {selectedResume.pdfName}
+            <h2 className="text-2xl font-bold my-4 text-center max-w-[300px] md:max-w-none truncate py-6">
+              {selectedResume?.pdfName}
             </h2>
 
             <div className="flex-grow flex flex-col border rounded-lg shadow-md overflow-auto relative">
@@ -137,8 +137,8 @@ const PDFViewerModalStatic = ({
                 </div>
               )}
 
-              {images.length > 0 ? (
-                <div className="w-full flex justify-center items-center  ">
+              {images?.length > 0 ? (
+                <div className="w-full flex justify-center items-center">
                   <img
                     src={`${import.meta.env.VITE_BASE_URL}/${images[
                       currentPage
@@ -154,8 +154,8 @@ const PDFViewerModalStatic = ({
           </div>
 
           {/* Right Side: Extracted Text Container */}
-          <div className="w-full md:w-1/2 p-2 flex flex-col bg-gray-100 border border-gray-300 rounded-lg mt-4 md:mt-[50px] max-h-[calc(90vh-100px)] ">
-            <h3 className="font-semibold text-lg mb-2 w-full">
+          <div className="w-full md:w-1/2 p-2 flex flex-col bg-gray-100 border border-gray-300 rounded-lg mt-4 md:mt-[50px] max-h-[calc(90vh-100px)]">
+            <h3 className="font-semibold text-lg mb-2 w-full ">
               Extracted Text:
             </h3>
             <div className="relative w-full h-full">
@@ -214,7 +214,7 @@ const PDFViewerModalStatic = ({
           {selectedResumeType === "Resumes" && (
             <Trash2
               size={18}
-              onClick={() => handleDeleteResume(selectedResume._id)}
+              onClick={() => handleDeleteResume(selectedResume?._id)}
               className="text-red-600 hover:text-red-800 cursor-pointer"
             />
           )}
@@ -223,8 +223,7 @@ const PDFViewerModalStatic = ({
             onClick={handleDownloadPDF}
             className="text-xs sm:text-sm px-3 py-1 sm:px-4 sm:py-2 text-white font-semibold rounded-lg transition duration-300 shadow-md flex items-center gap-1 sm:gap-2 cursor-pointer bg-green-600 hover:bg-green-800 transform hover:scale-105"
           >
-            <Download size={20} />
-            {loading ? "Downloading..." : "PDF"}
+            {loading ? "Downloading..." : <Download size={15} />}
           </button>
 
           <ArrowBigRight

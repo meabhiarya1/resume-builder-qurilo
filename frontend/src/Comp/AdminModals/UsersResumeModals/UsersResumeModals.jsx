@@ -24,7 +24,6 @@ const UsersResumeModals = ({
           </p>
         </div>
 
-        {/* Scrollable Content */}
         <div className="w-full max-h-60 overflow-y-auto p-3 space-y-2">
           {pdfData?.length > 0 ? (
             pdfData.map((pdf, index) => (
