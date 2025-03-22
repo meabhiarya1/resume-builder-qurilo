@@ -223,7 +223,7 @@ const UserDashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#3F4F44]">
+    <div className="flex flex-col bg-[#3F4F44]">
       {/* Navbar */}
       <Navbar />
 
@@ -239,8 +239,8 @@ const UserDashboard = () => {
         />
       )}
 
-      <div className="flex max-md:flex-col-reverse max-lg:gap-6 my-4">
-        <div className="min-md:overflow-y-auto h-[calc(100vh-90px)] w-[100vw] min-2xl:w-[75vw] min-xl:[60vw] custom-scrollbar">
+      <div className="flex max-md:flex-col-reverse max-lg:gap-6 my-4  ">
+        <div className="min-md:overflow-y-auto   w-[100vw] min-2xl:w-[75vw] min-xl:[60vw] custom-scrollbar">
           <UserTotalResume
             pdfsInfo={pdfsInfo}
             handleViewResume={handleViewResume}

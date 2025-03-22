@@ -254,8 +254,8 @@ const AdminDashboard = () => {
   return (
     <div>
       <Navbar setActiveTab={setActiveTab} />
-      <div className="flex flex-wrap justify-start md:justify-between gap-4 w-full px-4 bg-[#3F4F44] h-[calc(100vh-60px)]">
-        <div className="w-full overflow-y-auto p-4">
+      <div className="flex flex-wrap justify-start md:justify-between gap-4 w-full px-4 bg-[#3F4F44] ">
+        <div className="w-full overflow-y-auto p-4 h-screen">
           {activeTab === "users" && (
             <TotalUsers
               users={users}
