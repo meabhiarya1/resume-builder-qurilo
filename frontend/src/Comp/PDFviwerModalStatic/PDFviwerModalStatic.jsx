@@ -172,24 +172,79 @@ const PDFViewerModalStatic = ({
                     height: 550,
                     toolbarAdaptive: false,
                     toolbar: true, // Enable toolbar
+                    toolbarButtonSize: "middle",
+                    allowResizeY: true,
+                    allowResizeX: false,
+                    spellcheck: true,
+                    language: "en",
+                    uploader: {
+                      insertImageAsBase64URI: true, // Insert images directly as base64
+                    },
                     buttons: [
                       "bold",
                       "italic",
                       "underline",
-                      "|", // Basic text formatting
+                      "strikethrough",
+                      "superscript",
+                      "subscript",
+                      "|",
                       "ul",
                       "ol",
-                      "|", // Lists
+                      "|",
+                      "align",
+                      "outdent",
+                      "indent",
+                      "|",
+                      "font",
+                      "fontsize",
+                      "brush",
+                      "paragraph",
+                      "|",
+                      "image",
+                      "video",
+                      "table",
+                      "|",
                       "link",
                       "unlink",
-                      "|", // Links
-                      "undo",
-                      "redo",
-                      "|", // Undo/Redo
+                      "|",
                       "hr",
                       "eraser",
-                      "source", // Divider, Clear, Code view
+                      "source",
+                      "|",
+                      "cut",
+                      "undo",
+                      "redo",
+                      "copyformat",
+                      "fullsize",
                     ],
+                    controls: {
+                      font: {
+                        list: {
+                          Arial: "Arial",
+                          Verdana: "Verdana",
+                          "Times New Roman": "Times New Roman",
+                          Tahoma: "Tahoma",
+                          "Courier New": "Courier New",
+                        },
+                      },
+                      fontsize: {
+                        list: [
+                          "8",
+                          "10",
+                          "12",
+                          "14",
+                          "16",
+                          "18",
+                          "24",
+                          "30",
+                          "36",
+                          "48",
+                          "60",
+                          "72",
+                          "96",
+                        ],
+                      },
+                    },
                     placeholder: "Insert text here...",
                   }}
                 />
