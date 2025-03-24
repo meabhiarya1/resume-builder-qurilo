@@ -1,4 +1,5 @@
 import React from "react";
+import userImage from "../../assets/dp.jpg";
 
 const TotalUsers = ({ loading, users, error, handleUserPdfs }) => {
   if (loading) return <p className="text-center text-gray-600">Loading...</p>;
@@ -21,8 +22,8 @@ const TotalUsers = ({ loading, users, error, handleUserPdfs }) => {
               <div className="px-6 py-8 sm:p-10 sm:pb-6">
                 <div className="grid items-center justify-center w-full text-left">
                   <img
-                    src="../src/assets/dp.jpg"
-                    alt="Users"
+                    src={userImage}
+                    alt="userImage"
                     className="w-20 h-20 mx-auto m-4 rounded-2xl object-cover"
                   />
                   <div>

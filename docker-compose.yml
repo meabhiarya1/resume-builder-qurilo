@@ -9,11 +9,3 @@ services:
       - ./backend:/server
       - /server/node_modules
     restart: unless-stopped
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "5174:80"
-    depends_on:
-      - backend
-    restart: unless-stopped
