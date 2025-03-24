@@ -33,44 +33,6 @@ const AdminDashboard = () => {
   const [pdf, setPdf] = useState(null);
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const { data } = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/auth/users`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setUsers(data);
-      } catch (err) {
-        setError(err.response?.data?.message || "Error fetching users");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
-  useEffect(() => {
-    const fetchedTempateData = async () => {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/api/pdfs`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        const data = await response.json();
-        setTemplatePdfsInfo(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchedTempateData();
-  }, []);
-
   const handleUserPdfs = async (user) => {
     try {
       const token = localStorage.getItem("token");
@@ -137,7 +99,6 @@ const AdminDashboard = () => {
       const pdf = await pdfjs.getDocument(pdfFile).promise;
       const pagesArray = [];
       for (let i = 1; i <= pdf.numPages; i++) {
-        console.log(i);
         const page = await pdf.getPage(i);
         const scale = 2;
         const viewport = page.getViewport({ scale });
@@ -159,7 +120,8 @@ const AdminDashboard = () => {
   const handleTemplateUpload = (e) => {
     const file = e.target.files[0];
     if (!file) {
-      alert("Please upload a valid PDF file.");
+      alert("Please select a PDF file to upload.");
+      e.target.value = "";
       return;
     }
     if (file.type !== "application/pdf") {
@@ -167,15 +129,27 @@ const AdminDashboard = () => {
       e.target.value = "";
       return;
     }
+
     const reader = new FileReader();
-    reader.onload = (e) => {
-      setPdfFile(e.target.result);
-      setShowTemplateModal(true);
+
+    reader.onload = (event) => {
+      try {
+        setPdfFile(event.target.result);
+        setPdfFileName(file.name);
+        setPdf(file);
+        setShowTemplateModal(true);
+      } catch (error) {
+        console.error("Error loading PDF file:", error);
+        alert("An unexpected error occurred while loading the PDF.");
+      }
     };
+
+    reader.onerror = (error) => {
+      console.error("FileReader error:", error);
+      alert("Failed to read file. Please try again.");
+    };
+
     reader.readAsDataURL(file);
-    setPdfFileName(file.name);
-    setPdf(file);
-    setShowTemplateModal(true);
     e.target.value = "";
   };
 
@@ -239,11 +213,48 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const { data } = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/auth/users`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setUsers(data);
+      } catch (err) {
+        setError(err.response?.data?.message || "Error fetching users");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchedTempateData = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/api/pdfs`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const data = await response.json();
+        setTemplatePdfsInfo(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchedTempateData();
+  }, []);
+
+  useEffect(() => {
     if (pdfFile) {
       extractPagesAsImages(pdfFile);
     }
   }, [pdfFile, pdf]);
-
 
   return (
     <div>
