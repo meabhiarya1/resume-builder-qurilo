@@ -22,9 +22,12 @@ const AuthProvider = ({ children }) => {
       );
       localStorage.setItem("token", res.data.token);
       setUser(res.data.user);
-      navigate("/"); 
+      alert("Login successful");
+      navigate("/");
     } catch (error) {
       console.error("Login failed", error);
+      alert("Invalid credentials");
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -33,7 +36,7 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
-    navigate("/"); 
+    navigate("/");
   };
 
   useEffect(() => {
@@ -54,12 +57,12 @@ const AuthProvider = ({ children }) => {
       .then((res) => {
         setUser(res?.data);
         if (location.pathname === "/" || location.pathname === "/register") {
-          navigate("/dashboard"); 
+          navigate("/dashboard");
         }
       })
       .catch((err) => {
         if (err.response?.status === 401) {
-          logout(); 
+          logout();
         }
       })
       .finally(() => setLoading(false));

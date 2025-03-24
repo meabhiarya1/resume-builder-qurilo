@@ -7,7 +7,7 @@ const UserTotalTemplate = ({
 }) => {
   return (
     <div
-      className="p-6 border-gray-800 flex flex-col m-2 rounded-lg border-3 bg-black/30"
+      className="p-6 border-gray-800 flex flex-col m-2 rounded-lg border-3 bg-black/30 min-h-[40vh]"
       onClick={() => setSelectedResumeType("Templates")}
     >
       <h2 className="text-2xl font-bold mx-auto p-2 text-center text-amber-50">

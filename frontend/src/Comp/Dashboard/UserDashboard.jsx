@@ -267,7 +267,7 @@ const UserDashboard = () => {
       )}
 
       <div className="flex max-md:flex-col-reverse max-lg:gap-6 my-4  ">
-        <div className="min-md:overflow-y-auto   w-[100vw] min-2xl:w-[75vw] min-xl:[60vw] custom-scrollbar">
+        <div className="min-md:overflow-y-auto w-[100vw] min-2xl:w-[75vw] min-xl:[60vw] custom-scrollbar">
           <UserTotalResume
             pdfsInfo={pdfsInfo}
             handleViewResume={handleViewResume}
@@ -285,7 +285,7 @@ const UserDashboard = () => {
         {/* Upload Section */}
         <div className="flex items-center w-[100vw] min-2xl:w-[25vw] min-xl:[40vw] mt-[70px] px-6 justify-center h-[calc(100vh-250px)] max-md:h-[200px] max-lg:mb-12">
           <div className="border-3 border-gray-700 w-[100%] overflow-hidden rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
-            <div className=" p-6 ">
+            <div className="p-6">
               <h3 className="text-lg font-semibold text-amber-50">
                 Upload Files
               </h3>
@@ -294,11 +294,11 @@ const UserDashboard = () => {
               </p>
 
               {/* File Upload Input */}
-              <div className=" mt-6">
-                <div className=" h-[calc(100vh-250px)] max-md:h-[200px]  rounded-xl border-2 border-dashed border-slate-700 bg-slate-900/50 p-8 transition-colors group-hover/dropzone:border-cyan-500/50 flex flex-col justify-center">
+              <div className="mt-6">
+                <div className="h-[calc(100vh-250px)] max-md:h-[200px] rounded-xl border-2 border-dashed border-slate-700 bg-slate-900/50 p-8 transition-colors group-hover/dropzone:border-cyan-500/50 flex flex-col justify-center relative">
                   <input
                     type="file"
-                    className=" inset-0 z-50 h-full w-full cursor-pointer opacity-0"
+                    className="inset-0 z-50 h-full w-full cursor-pointer opacity-0 absolute"
                     accept="application/pdf"
                     onChange={handleFileUpload}
                   />
