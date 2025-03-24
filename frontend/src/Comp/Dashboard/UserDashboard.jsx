@@ -31,26 +31,50 @@ const UserDashboard = () => {
     setSelectedResume(pdf);
     setShowModalModalStatic(true);
   };
-
+  
   // Handle File Upload
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    if (!file) return;
-    if (file.type !== "application/pdf") {
-      alert("Please upload a valid PDF file.");
-      event.target.value = "";  
+
+    if (!file) {
+      alert("No file selected.");
+      event.target.value = "";
       return;
     }
+
+    if (file.type !== "application/pdf") {
+      alert("Please upload a valid PDF file.");
+      event.target.value = "";
+      return;
+    }
+
     const reader = new FileReader();
+
     reader.onload = (e) => {
-      setPdfFile(e.target.result);
-      setShowModal(true);
+      try {
+        setPdfFile(e.target.result);
+        setPdfFileName(file.name);
+        setPdf(file);
+        setShowModal(true);
+      } catch (error) {
+        console.error("Error setting PDF file:", error);
+        alert("An unexpected error occurred while processing your file.");
+      }
     };
-    reader.readAsDataURL(file);
-    setPdfFileName(file.name);
-    setPdf(file);
-    setShowModal(true);
-    event.target.value = "";  
+
+    reader.onerror = (error) => {
+      console.error("FileReader error:", error);
+      alert("Failed to read the file. Please try again.");
+    };
+
+    try {
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Error initiating file read:", error);
+      alert("Could not initiate file reading. Please try again.");
+    }
+
+    event.target.value = "";
   };
 
   // Extract PDF Pages as Images
@@ -72,6 +96,7 @@ const UserDashboard = () => {
         pagesArray.push(imageData);
       }
       setImages(pagesArray);
+      setPdfFile(null);
     } catch (error) {
       console.error("Error extracting PDF pages:", error);
     }
@@ -194,7 +219,7 @@ const UserDashboard = () => {
     if (pdfFile) {
       extractPagesAsImages(pdfFile);
     }
-  }, [pdfFile]);
+  }, [pdfFile, pdf]);
 
   useEffect(() => {
     const fetchedData = async () => {
