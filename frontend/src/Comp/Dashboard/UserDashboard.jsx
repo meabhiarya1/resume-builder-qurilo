@@ -223,7 +223,7 @@ const UserDashboard = () => {
   }, []);
 
   return (
-    <div className="flex flex-col bg-[#3F4F44]">
+    <div className="flex flex-col bg-[#3F4F44] min-h-screen">
       {/* Navbar */}
       <Navbar />
 
