@@ -136,8 +136,8 @@ const AdminDashboard = () => {
       setImages([]);
       const pdf = await pdfjs.getDocument(pdfFile).promise;
       const pagesArray = [];
-
       for (let i = 1; i <= pdf.numPages; i++) {
+        console.log(i);
         const page = await pdf.getPage(i);
         const scale = 2;
         const viewport = page.getViewport({ scale });
@@ -150,6 +150,7 @@ const AdminDashboard = () => {
         pagesArray.push(imageData);
       }
       setImages(pagesArray);
+      setPdfFile(null);
     } catch (error) {
       console.error("Error extracting PDF pages:", error);
     }
@@ -172,7 +173,6 @@ const AdminDashboard = () => {
       setShowTemplateModal(true);
     };
     reader.readAsDataURL(file);
-
     setPdfFileName(file.name);
     setPdf(file);
     setShowTemplateModal(true);
@@ -242,9 +242,8 @@ const AdminDashboard = () => {
     if (pdfFile) {
       extractPagesAsImages(pdfFile);
     }
-  }, [pdfFile]);
+  }, [pdfFile, pdf]);
 
-  // useEffect(() => {}, [handleTemplateUpload]);
 
   return (
     <div>
