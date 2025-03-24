@@ -22,6 +22,7 @@ const PDFViewerModal = ({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [currentPage]);
 
+
   const nextPage = () => {
     if (currentPage < images.length - 1) {
       setCurrentPage(currentPage + 1);
@@ -36,7 +37,6 @@ const PDFViewerModal = ({
 
   const handleCrossButton = () => {
     setShowModal(false);
-    setImages([]);
   };
 
   return (
@@ -52,9 +52,9 @@ const PDFViewerModal = ({
 
         {/* PDF Viewer */}
         <p className="mt-4 flex items-center justify-between w-full flex-wrap gap-2 font-semibold mb-2">
-          Page {currentPage + 1} of {images.length}
+          Page {currentPage + 1} of {images?.length}
         </p>
-        {images.length > 0 ? (
+        {images?.length > 0 ? (
           <div className="flex flex-col items-center max-h-[80vh]">
             <div className="overflow-auto max-h-[80vh] w-full border rounded-lg p-2 custom-scrollbar">
               <img

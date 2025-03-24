@@ -133,6 +133,7 @@ const AdminDashboard = () => {
 
   const extractPagesAsImages = async (pdfFile) => {
     try {
+      setImages([]);
       const pdf = await pdfjs.getDocument(pdfFile).promise;
       const pagesArray = [];
 
@@ -140,21 +141,14 @@ const AdminDashboard = () => {
         const page = await pdf.getPage(i);
         const scale = 2;
         const viewport = page.getViewport({ scale });
-
-        // Create a canvas to render the page
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
         canvas.width = viewport.width;
         canvas.height = viewport.height;
-
-        // Render page onto canvas
         await page.render({ canvasContext: context, viewport }).promise;
-
-        // Convert canvas to image URL
         const imageData = canvas.toDataURL("image/png");
         pagesArray.push(imageData);
       }
-
       setImages(pagesArray);
     } catch (error) {
       console.error("Error extracting PDF pages:", error);
@@ -162,7 +156,6 @@ const AdminDashboard = () => {
   };
 
   const handleTemplateUpload = (e) => {
-    console.log("file");
     const file = e.target.files[0];
     if (!file) {
       alert("Please upload a valid PDF file.");
@@ -170,6 +163,7 @@ const AdminDashboard = () => {
     }
     if (file.type !== "application/pdf") {
       alert("Please upload a valid PDF file.");
+      e.target.value = "";
       return;
     }
     const reader = new FileReader();
@@ -182,6 +176,7 @@ const AdminDashboard = () => {
     setPdfFileName(file.name);
     setPdf(file);
     setShowTemplateModal(true);
+    e.target.value = "";
   };
 
   const handleSave = async () => {
@@ -249,7 +244,7 @@ const AdminDashboard = () => {
     }
   }, [pdfFile]);
 
-  useEffect(() => {}, [handleTemplateUpload]);
+  // useEffect(() => {}, [handleTemplateUpload]);
 
   return (
     <div>

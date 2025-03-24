@@ -52,9 +52,9 @@ const TemplateViewerModal = ({
 
         {/* Template Viewer */}
         <p className="text-gray-700 font-semibold flex justify-center">
-          Page {currentPage + 1} of {images.length}
+          Page {currentPage + 1} of {images?.length}
         </p>
-        {images.length > 0 ? (
+        {images?.length > 0 ? (
           <div className="flex flex-col items-center">
             <div className="overflow-auto max-h-[75vh] w-full border rounded-lg p-2">
               <img

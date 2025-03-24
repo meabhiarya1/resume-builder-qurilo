@@ -38,6 +38,7 @@ const UserDashboard = () => {
     if (!file) return;
     if (file.type !== "application/pdf") {
       alert("Please upload a valid PDF file.");
+      event.target.value = "";  
       return;
     }
     const reader = new FileReader();
@@ -46,15 +47,16 @@ const UserDashboard = () => {
       setShowModal(true);
     };
     reader.readAsDataURL(file);
-
     setPdfFileName(file.name);
     setPdf(file);
     setShowModal(true);
+    event.target.value = "";  
   };
 
   // Extract PDF Pages as Images
   const extractPagesAsImages = async (pdfFile) => {
     try {
+      setImages([]);
       const pdf = await pdfjs.getDocument(pdfFile).promise;
       const pagesArray = [];
       for (let i = 1; i <= pdf.numPages; i++) {
@@ -256,7 +258,7 @@ const UserDashboard = () => {
         </div>
 
         {/* Upload Section */}
-        <div className="  flex items-center w-[100vw] min-2xl:w-[25vw] min-xl:[40vw] mt-[70px] px-6 justify-center h-[calc(100vh-250px)] max-md:h-[200px] max-lg:mb-12 ">
+        <div className="flex items-center w-[100vw] min-2xl:w-[25vw] min-xl:[40vw] mt-[70px] px-6 justify-center h-[calc(100vh-250px)] max-md:h-[200px] max-lg:mb-12">
           <div className="border-3 border-gray-700 w-[100%] overflow-hidden rounded-2xl bg-slate-950 shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-cyan-500/10">
             <div className=" p-6 ">
               <h3 className="text-lg font-semibold text-amber-50">
