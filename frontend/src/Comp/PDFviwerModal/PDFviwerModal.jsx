@@ -93,7 +93,7 @@ const PDFViewerModal = ({
                 }}
                 className="cursor-pointer px-2 py-2 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold rounded-lg shadow-md transition-transform transform hover:scale-105 text-sm md:py-2 md:px-4 "
               >
-                Upload
+                Upload Again
               </button>
               <button
                 onClick={nextPage}

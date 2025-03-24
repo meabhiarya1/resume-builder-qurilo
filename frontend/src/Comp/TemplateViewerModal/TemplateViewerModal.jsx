@@ -93,7 +93,7 @@ const TemplateViewerModal = ({
                 }}
                 className="px-3 py-2 text-sm bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold rounded-lg shadow-md transition-transform transform hover:scale-105 cursor-pointer"
               >
-                Upload 
+                Upload Again
               </button>
 
               <button
